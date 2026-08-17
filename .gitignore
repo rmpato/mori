@@ -1,0 +1,10 @@
+# Build output
+/mori
+/dist/
+
+# Test and coverage artifacts
+*.out
+*.test
+
+# macOS
+.DS_Store
