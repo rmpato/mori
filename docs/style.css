@@ -131,19 +131,10 @@ h3 {
   margin: 3rem 0 .6rem;
 }
 
-.lede { font-size: 1.16rem; color: var(--ink-soft); }
-
 .aside {
   font-size: .95rem;
   color: var(--ink-faint);
   font-style: italic;
-}
-
-hr.rule {
-  border: 0;
-  height: 1px;
-  background: var(--rule);
-  margin: 0;
 }
 
 /* A leaf used as an ornament between sections. */
@@ -152,7 +143,7 @@ hr.rule {
   color: var(--rule);
   font-size: 1rem;
   letter-spacing: .8em;
-  margin: 4.5rem 0;
+  margin: 5.5rem 0;
   user-select: none;
 }
 
@@ -253,18 +244,11 @@ button.copy {
 button.copy:hover { color: var(--moss); background: var(--moss-wash); }
 button.copy.done  { color: var(--moss); }
 
-.install-note {
-  margin: .8rem 0 0;
-  font-size: .92rem;
-  color: var(--ink-faint);
-  text-align: center;
-}
-
 .hero-links {
   display: flex;
   justify-content: center;
   gap: .6rem;
-  margin-top: 1.8rem;
+  margin-top: 1.4rem;
 }
 .btn {
   font-family: var(--sans);
@@ -345,16 +329,6 @@ section { padding: 1rem 0; }
   .two-up { grid-template-columns: 1fr 1fr; gap: 3rem; }
 }
 
-/* The opening paragraph of a section gets a drop cap. */
-.dropcap::first-letter {
-  float: left;
-  font-size: 3.5em;
-  line-height: .82;
-  padding: .06em .1em 0 0;
-  color: var(--moss);
-  font-weight: 400;
-}
-
 blockquote.pull {
   margin: 3rem 0;
   padding: 0;
@@ -367,26 +341,41 @@ blockquote.pull {
 }
 blockquote.pull span { color: var(--moss); font-style: normal; }
 
-/* The keyboard table. */
-.keys {
-  margin: 1.6rem 0 0;
-  border-top: 1px solid var(--rule-soft);
+/* Statements: the few things worth saying, each given air instead of
+   paragraphs. Stacked on a phone, side by side once there's room. */
+.statements {
+  display: grid;
+  gap: 3rem;
+  margin: 5rem auto;
 }
-.keys div {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding: .5rem 0;
-  border-bottom: 1px solid var(--rule-soft);
+@media (min-width: 52rem) {
+  .statements { grid-template-columns: repeat(3, 1fr); gap: 2.6rem; }
 }
-.keys kbd {
-  font-family: var(--mono);
-  font-size: .76rem;
-  color: var(--moss);
-  min-width: 6.5rem;
-  flex: none;
+.statements h2 {
+  font-size: 1.5rem;
+  line-height: 1.18;
+  margin-bottom: .7rem;
+  text-wrap: balance;
 }
-.keys span { color: var(--ink-soft); font-size: .97rem; }
+.statements p { font-size: .98rem; color: var(--ink-soft); }
+.statements .path {
+  margin-top: .9rem;
+  font-size: .72rem;
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+.statements .path b { color: var(--moss); font-weight: 600; }
+.statements .path code { font-family: var(--mono); }
+
+/* A heading on its own, centred, used as a hinge between spreads. */
+.centred { text-align: center; }
+.centred .label { margin-bottom: .7rem; }
+h2.big {
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3rem);
+  line-height: 1.08;
+  margin: 4rem 0 2.4rem;
+  text-wrap: balance;
+}
 
 /* The "what mori doesn't do" list. */
 .nots {
@@ -475,28 +464,18 @@ code.inline {
   margin: 2.4rem 0;
 }
 @media (min-width: 44rem) { .pair { grid-template-columns: 1fr 1fr; } }
-.pair > div { padding: 1.9rem 1.7rem; }
+.pair > div { padding: 2.2rem 1.9rem; }
 .pair > div + div { border-top: 1px solid var(--rule); }
 @media (min-width: 44rem) {
   .pair > div + div { border-top: 0; border-left: 1px solid var(--rule); }
 }
-.pair h3 { margin: 0 0 .2rem; font-size: 1.5rem; }
+.pair h3 { margin: .35rem 0 .2rem; font-size: 1.9rem; font-weight: 500; }
+.pair h3 a { background-image: none; }
+.pair h3 a:hover { background-image: none; opacity: .75; }
 .pair .who { font-family: var(--mono); font-size: .74rem; color: var(--ink-faint); letter-spacing: .04em; }
-.pair p { font-size: .98rem; color: var(--ink-soft); margin-top: .9rem; }
+.pair p { font-size: 1.05rem; color: var(--ink-soft); margin-top: .5rem; font-style: italic; }
 .pair .tuki h3 { color: var(--gold); }
 .pair .mori h3 { color: var(--moss); }
-
-/* The stack list. */
-.stack { list-style: none; padding: 0; margin: 1.4rem 0 0; }
-.stack li {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: .55rem 0;
-  border-bottom: 1px solid var(--rule-soft);
-  font-size: .97rem;
-}
-.stack span { color: var(--ink-faint); font-style: italic; }
 
 /* ---------------------------------------------------------------- foot -- */
 
