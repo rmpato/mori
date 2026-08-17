@@ -147,6 +147,68 @@ h3 {
   user-select: none;
 }
 
+/* -------------------------------------------------------------- topbar -- */
+
+/* tuki's page has one of these and mori's didn't, which is most of why the
+   page felt like something you fall down rather than something you can move
+   around in. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s ease;
+}
+.topbar-inner {
+  max-width: var(--wide);
+  margin-inline: auto;
+  padding: .7rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+.topbar-brand {
+  font-family: var(--mono);
+  font-size: .8rem;
+  color: var(--moss);
+  background-image: none;
+  white-space: nowrap;
+}
+.topbar-brand:hover { background-image: none; opacity: .75; }
+.topbar-links {
+  list-style: none;
+  display: flex;
+  gap: 1.2rem;
+  margin: 0 auto 0 0;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.topbar-links a { color: var(--ink-faint); background-image: none; }
+.topbar-links a:hover { color: var(--moss); }
+.topbar-gh {
+  font-family: var(--sans);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background-image: none;
+  white-space: nowrap;
+}
+.topbar-gh:hover { color: var(--moss); background-image: none; }
+@media (max-width: 34rem) {
+  .topbar-links { display: none; }
+  .topbar-links { gap: .8rem; }
+}
+
+/* Anchors shouldn't land underneath the sticky bar. */
+:target { scroll-margin-top: 4.5rem; }
+section[id] { scroll-margin-top: 4.5rem; }
+
 /* ------------------------------------------------------------ masthead -- */
 
 .masthead {
@@ -302,6 +364,23 @@ button.copy.done  { color: var(--moss); }
   background: var(--moss); color: var(--paper-2);
   font-weight: 700; border-radius: 2px;
 }
+
+/* The gallery. Every screen is a real capture rather than a mock, so what a
+   visitor sees is what they get — and the terminal's background is mori's own
+   dark, so the image sits in the page instead of on it. */
+.gallery .tablist { justify-content: center; margin-bottom: 1.4rem; }
+.gallery .tabpanel { animation: fade .25s ease both; }
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+
+.caption {
+  margin: 1rem auto 0;
+  max-width: 38rem;
+  text-align: center;
+  font-size: .95rem;
+  color: var(--ink-faint);
+  text-wrap: pretty;
+}
+.caption kbd, .caption code { color: var(--ink-soft); }
 
 /* The hero is a real capture, so it carries the terminal's own dark whatever
    the page's theme is. Its corners are already transparent — see

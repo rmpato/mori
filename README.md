@@ -201,7 +201,7 @@ make check   # fmt, vet, test
 ```
 
 [`runbooks/`](runbooks/) covers releasing, the website, regenerating the
-screenshot, and finding your way around the code.
+screenshots (`./tools/screenshots.sh`), and finding your way around the code.
 
 Releases are cut by tagging: `git tag v0.1.0 && git push --tags` runs
 GoReleaser from CI. The archive names in `.goreleaser.yaml` are load-bearing —

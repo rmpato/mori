@@ -18,6 +18,19 @@
 
 <a class="skip" href="#install">Skip to install</a>
 
+<nav class="topbar" aria-label="Sections">
+  <div class="topbar-inner">
+    <a class="topbar-brand" href="#top"><span aria-hidden="true">(-.-)</span> mori</a>
+    <ul class="topbar-links">
+      <li><a href="#look">look</a></li>
+      <li><a href="#why">why</a></li>
+      <li><a href="#tuki">tuki</a></li>
+      <li><a href="#install">install</a></li>
+    </ul>
+    <a class="topbar-gh" href="https://github.com/rmpato/mori">GitHub</a>
+  </div>
+</nav>
+
 <!-- ============================================================ masthead -->
 <header class="masthead" id="top">
   <div class="col">
@@ -41,104 +54,63 @@
 
 <main>
 
-<!-- ================================================================ hero -->
-<div class="wide spread">
-  <figure>
-    <img class="shot" src="screenshot.png" width="1600" height="848"
-         alt="mori running in a terminal. The header reads Monday, August 17, 2026
-              with a mood of calm; below it a page written in two sittings, with a
-              23:04 timestamp between them and #go and #photography picked out in
-              green; the footer lists the keys.">
-    <figcaption>Type <code class="inline">mori</code>. Today's page is open and the cursor is already in it.</figcaption>
-  </figure>
-</div>
-
-<!-- ========================================================== statements -->
-<section class="wide statements">
-  <div>
-    <h2>Every day already exists.</h2>
-    <p>No “new entry” step — most days are simply empty. Come back after
-    a few hours and mori stamps the time for you.</p>
-  </div>
-  <div>
-    <h2>A page is just Markdown.</h2>
-    <p>One small file per day, in a folder you own. No database, no index,
-    nothing that can take the whole journal down with it.</p>
-    <p class="path"><code>~/.local/share/mori/journal/<br>2026/08/<b>2026-08-17.md</b></code></p>
-  </div>
-  <div>
-    <h2>Nothing is counted.</h2>
-    <p>No streaks, no scores, no goals, and no “you haven't written lately”.
-    Come back after three weeks and it just says <em>welcome back</em>.</p>
-  </div>
-</section>
-
-<p class="ornament" aria-hidden="true">🌿</p>
-
-<!-- ============================================================== browse -->
-<div class="wide spread">
-  <div class="two-up">
-    <figure>
-      <div class="screen">
-<pre aria-label="The calendar view for August 2026, with days that have entries picked out."><span class="moss">🌿  Monday, August 17, 2026</span>
-<span class="dim">──────────────────────────────────────</span>
-
-           <span class="soft">August 2026</span>
-
-        <span class="dim">Mo Tu We Th Fr Sa Su</span>
-                       <span class="dim"> 1</span> <span class="bold"> 2</span>
-        <span class="dim"> 3</span> <span class="dim"> 4</span> <span class="bold"> 5</span> <span class="dim"> 6</span> <span class="dim"> 7</span> <span class="dim"> 8</span> <span class="bold"> 9</span>
-        <span class="dim">10</span> <span class="bold">11</span> <span class="dim">12</span> <span class="dim">13</span> <span class="bold">14</span> <span class="dim">15</span> <span class="dim">16</span>
-        <span class="cursor">17</span> <span class="dim">18</span> <span class="dim">19</span> <span class="dim">20</span> <span class="bold">21</span> <span class="dim">22</span> <span class="dim">23</span>
-        <span class="bold">24</span> <span class="dim">25</span> <span class="dim">26</span> <span class="dim">27</span> <span class="bold">28</span> <span class="dim">29</span> <span class="dim">30</span>
-        <span class="dim">31</span>
-
-           <span class="bold">17</span><span class="dim">  a page</span>
-
-<span class="dim">──────────────────────────────────────</span>
-<span class="dim">←→ day • ↑↓ week • [ ] month • ↵ open</span></pre>
-      </div>
-      <figcaption>A month, and the shape of it.</figcaption>
-    </figure>
-
-    <figure>
-      <div class="screen">
-<pre aria-label="Search results for the word photography, showing three matching days."><span class="moss">🌿  search</span>
-<span class="dim">──────────────────────────────────────</span>
-
-  <span class="moss">▸ 17 Aug</span>   touch the #<span class="mark">photography</span> edits at all.
-    <span class="dim">11 Aug</span>   Walked to the lake. #<span class="mark">photography</span>
-    <span class="dim">28 Jul</span>   Selected the Bariloche
-             <span class="mark">photo</span>graphs finally.
-
-<span class="dim">──────────────────────────────────────</span>
-<span class="dim">search </span>photography</pre>
-      </div>
-      <figcaption>Search runs as you type, newest day first.</figcaption>
-    </figure>
-  </div>
-</div>
-
-<section class="col centred">
-  <h2 class="big">The part that gets<br>better with years.</h2>
-</section>
-
-<div class="wide spread">
-  <figure>
-    <div class="screen">
-<pre aria-label="Output of mori looking-back august, showing days written and tag counts.">  <span class="moss">🌿  August 2026</span>
-
-  You wrote on 9 days.
-
-  <span class="moss">#photography</span>   <span class="dim">7 days</span>
-  <span class="moss">#go</span>            <span class="dim">2 days</span>
-  <span class="moss">#work</span>          <span class="dim">1 day</span>
-
-  In tuki, you finished 4 things, 2 of them #photography.</pre>
+<!-- ============================================================= gallery -->
+<section class="wide spread" id="look">
+  <div class="tabs gallery" data-tabs>
+    <div class="tablist" role="tablist" aria-label="Screens">
+      <button role="tab" aria-selected="true"  data-tab="today">today</button>
+      <button role="tab" aria-selected="false" data-tab="calendar">calendar</button>
+      <button role="tab" aria-selected="false" data-tab="search">search</button>
+      <button role="tab" aria-selected="false" data-tab="tags">tags</button>
+      <button role="tab" aria-selected="false" data-tab="context">tuki</button>
+      <button role="tab" aria-selected="false" data-tab="back">looking back</button>
     </div>
-    <figcaption>No comparison to another month. No average, no percentage, no adjective.</figcaption>
-  </figure>
-</div>
+
+    <div class="tabpanel" data-panel="today">
+      <img class="shot" src="screenshot.png" width="1600" height="812"
+           alt="mori showing Monday, August 17, 2026 with a mood of calm: a page
+                written in two sittings, with a 23:04 timestamp between them and
+                #go and #photography picked out in green.">
+      <p class="caption">Type <code class="inline">mori</code> and today's page is open, cursor already in it. The timestamp appeared because the writing came back to it after dinner.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="calendar" hidden>
+      <img class="shot" src="screen-calendar.png" width="1600" height="812" loading="lazy"
+           alt="The calendar for August 2026. Days with pages are bright, the rest
+                are dim, and the 17th is highlighted as the cursor.">
+      <p class="caption">A month, and the shape of it. Days you wrote on are lit; the rest are simply quiet.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="search" hidden>
+      <img class="shot" src="screen-search.png" width="1600" height="812" loading="lazy"
+           alt="Search for the word photo, showing three matching days with the
+                matched text highlighted in each excerpt.">
+      <p class="caption">Search runs as you type, newest day first, and shows the line the words were actually on.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="tags" hidden>
+      <img class="shot" src="screen-tags.png" width="1600" height="812" loading="lazy"
+           alt="The tag list: photography on three days, go on two, and work,
+                health, ideas and travel on one each.">
+      <p class="caption">Tags are the hashtags in your writing. Nothing to set up, nothing to maintain — choosing one is choosing a search.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="context" hidden>
+      <img class="shot" src="screen-context.png" width="1600" height="812" loading="lazy"
+           alt="The context pane for August 17: three finished tuki tasks and one
+                still open, each with its tag."
+      >
+      <p class="caption">If you use <a href="https://github.com/rmpato/tuki">tuki</a>, press <kbd>tab</kbd> to see what you got done while you decide what to say about it.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="back" hidden>
+      <img class="shot" src="screen-lookingback.png" width="1600" height="574" loading="lazy"
+           alt="mori looking-back august: you wrote on 9 days, with tag counts for
+                photography, go and work, and a line about what was finished in tuki.">
+      <p class="caption">A month, read back. No comparison to another month, no average, no percentage, and no adjective about whether it was enough.</p>
+    </div>
+  </div>
+</section>
 
 <p class="ornament" aria-hidden="true">🍂</p>
 
@@ -169,10 +141,9 @@
 </blockquote>
 
 <section class="col">
-  <p>If you have both, press <kbd>tab</kbd> and mori shows what you got done
-  that day while you decide what to say about it. It will never turn your task
-  list into prose and call it your writing — that rule is the reason the two
-  tools are separate. Read-only, optional, and silent when tuki isn't there.</p>
+  <p>mori will never turn your task list into prose and call it your writing —
+  that rule is the reason the two are separate tools. The bridge is optional,
+  read-only, and silent when tuki isn't installed.</p>
 </section>
 
 <p class="ornament" aria-hidden="true">❄</p>
@@ -182,22 +153,19 @@
   <p class="label">Install</p>
   <h2>However you'd normally reach for it.</h2>
 
+  <p>The one-liner at the top of this page is the usual way: it checks the
+  download against the release's own sha256, installs to
+  <code class="inline">~/.local/bin</code>, and puts that on your
+  <code class="inline">PATH</code>. If you'd rather not pipe a script:</p>
+
   <div class="tabs" data-tabs>
-    <div class="tablist" role="tablist" aria-label="Installation methods">
-      <button role="tab" aria-selected="true"  data-tab="curl">script</button>
-      <button role="tab" aria-selected="false" data-tab="go">go</button>
+    <div class="tablist" role="tablist" aria-label="Other ways to install">
+      <button role="tab" aria-selected="true"  data-tab="go">go</button>
       <button role="tab" aria-selected="false" data-tab="src">source</button>
       <button role="tab" aria-selected="false" data-tab="bin">binary</button>
     </div>
 
-    <div class="tabpanel" data-panel="curl">
-<pre class="code"><code><span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/rmpato/mori/main/install.sh | sh</code></pre>
-      <p>Checks the download against the release's own sha256, installs to
-      <code class="inline">~/.local/bin</code>, and adds it to your
-      <code class="inline">PATH</code> if it isn't there.</p>
-    </div>
-
-    <div class="tabpanel" data-panel="go" hidden>
+    <div class="tabpanel" data-panel="go">
 <pre class="code"><code><span class="p">$</span> go install github.com/rmpato/mori@latest</code></pre>
       <p>Lands in <code class="inline">~/go/bin</code>, which isn't on your
       <code class="inline">PATH</code> by default.</p>
@@ -211,11 +179,13 @@
 
     <div class="tabpanel" data-panel="bin" hidden>
       <p>Archives for macOS, Linux and Windows are on the
-      <a href="https://github.com/rmpato/mori/releases">releases page</a>.
-      Later, <code class="inline">mori update</code> keeps it current — it asks
-      first, and it is the only command that touches the network.</p>
+      <a href="https://github.com/rmpato/mori/releases">releases page</a>.</p>
     </div>
   </div>
+
+  <p class="aside" style="margin-top:1.6rem">Afterwards
+  <code class="inline">mori update</code> keeps it current. It asks first, and
+  it is the only command that touches the network.</p>
 </section>
 
 <p class="ornament" aria-hidden="true">🌱</p>
@@ -233,10 +203,9 @@
     <li>telemetry</li>
   </ul>
 
-  <p class="aside" style="margin-top:2.2rem">Your journal is stored at
-  <code class="inline">0600</code> in a directory only you can read. Nothing is
-  sent anywhere — and neither is anything on this page, which loads no fonts,
-  no analytics, and no third-party anything.</p>
+  <p class="aside" style="margin-top:2.2rem">Nothing on this page is sent
+  anywhere either: no fonts, no analytics, no third-party anything. It seemed
+  like the least a page about a private journal could do.</p>
 </section>
 
 </main>
