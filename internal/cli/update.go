@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/rmpato/mori/internal/ui"
 	"github.com/rmpato/mori/internal/update"
 )
 
@@ -47,7 +48,8 @@ of it.`,
 			}
 
 			if !update.IsNewer(current, rel.Version) {
-				e.println("  " + e.theme.Hint.Render(fmt.Sprintf("mori %s is the latest.", current)))
+				e.println("  " + e.theme.Face.Render(ui.FaceCalm) + "  " +
+					e.theme.Hint.Render(fmt.Sprintf("mori %s is the latest.", current)))
 				return nil
 			}
 
@@ -92,7 +94,7 @@ of it.`,
 				return err
 			}
 
-			e.println("  " + e.theme.Prompt.Render("🌿") + "  " +
+			e.println("  " + e.theme.Face.Render(ui.FaceHere) + "  " +
 				e.theme.Hint.Render(fmt.Sprintf("mori %s installed", rel.Version)))
 			return nil
 		},

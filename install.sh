@@ -210,7 +210,7 @@ add_to_path() { # add_to_path <dir>
 
 # --------------------------------------------------------------- install ---
 
-printf '\n  %s🌿  mori%s\n\n' "$C_ACCENT" "$C_OFF"
+printf '\n  %s(-.-)%s  %smori%s\n\n' "$C_ACCENT" "$C_OFF" "$C_ACCENT" "$C_OFF"
 
 detect_platform
 

@@ -2,8 +2,13 @@
 
 > Remember your days, not just your tasks.
 
+```
+(-.-)
+```
+
 mori is a private, local-first journal that lives in your terminal. It is the
-quiet companion to [tuki](https://github.com/rmpato/tuki):
+quiet companion to [tuki](https://github.com/rmpato/tuki) — same face, eyes
+closed:
 
 ```
 tuki → what do I need to do?
@@ -95,9 +100,29 @@ mori search photography
 mori search "the zine idea"
 mori search gym since:2026-01-01
 mori tags                  # the tags you've used, and how often
+mori looking-back august   # a month, read back
 mori path                  # where the journal lives
 mori path yesterday        # the file for a day, whether or not it exists yet
 ```
+
+## Looking back
+
+```
+🌿  August 2026
+
+    You wrote on 9 days.
+
+    #photography   7 days
+    #go            2 days
+    #work          1 day
+
+    In tuki, you finished 4 things, 2 of them #photography.
+```
+
+Counts of what happened, in the past tense. No comparison to any other month,
+no average, no percentage, no target, and no adjective about whether it was
+enough. A month with two days in it prints two days and says nothing else
+about it.
 
 Bare search words match the start of a word, so `photo` finds `photography`.
 A quoted phrase is matched exactly. Every printing command takes `--plain`

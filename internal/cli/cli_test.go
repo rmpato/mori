@@ -43,6 +43,16 @@ func journal(t *testing.T) (*store.Store, func(args ...string) (string, error)) 
 	return s, run
 }
 
+// writeTemp drops a file in a temp directory and returns its path.
+func writeTemp(t *testing.T, name, body string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), name)
+	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
 func write(t *testing.T, s *store.Store, d entry.Date, e entry.Entry) {
 	t.Helper()
 	e.Date = d

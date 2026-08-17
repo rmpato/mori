@@ -157,7 +157,7 @@ func (e *env) writeEntry(en entry.Entry, plain bool) {
 	e.println()
 
 	if en.IsEmpty() {
-		e.println(e.theme.Aside.Render("   nothing written here."))
+		e.println(e.theme.Face.Render("   "+ui.FaceCalm) + e.theme.Aside.Render("  nothing written here."))
 		e.println()
 		return
 	}

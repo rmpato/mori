@@ -25,6 +25,7 @@ type Theme struct {
 
 	// Styles.
 	Logo    lipgloss.Style
+	Face    lipgloss.Style
 	Section lipgloss.Style // a heading inside a view, like a month name
 	Date    lipgloss.Style
 	Weekday lipgloss.Style
@@ -55,6 +56,7 @@ func New(isDark bool) Theme {
 	}
 
 	t.Logo = lipgloss.NewStyle().Foreground(t.Brand).Bold(true)
+	t.Face = lipgloss.NewStyle().Foreground(t.Brand)
 	t.Section = lipgloss.NewStyle().Foreground(t.Text).Bold(true)
 	t.Date = lipgloss.NewStyle().Foreground(t.Muted)
 	t.Weekday = lipgloss.NewStyle().Foreground(t.Brand)

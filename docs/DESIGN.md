@@ -568,7 +568,7 @@ you write, and it never appears at the top of an empty page looking expectant.
 | **M2** | calendar, search, tags, mood, `$EDITOR` | done |
 | **M3** | release plumbing — Makefile, goreleaser, install.sh, CI, README | done |
 | **M4** | `facts` + tuki bridge + `--from-tuki` + config | done |
-| **M5** | polish: mascot, seasons, `looking-back` | |
+| **M5** | polish: mascot, seasons, `looking-back` | done |
 
 M0–M3 is a real, finished, releasable journal that has never heard of tuki.
 That is the point.
@@ -588,5 +588,13 @@ That is the point.
    `-3d`, `2026-08-17`, `08-17`, ported from tuki's `ParseDue` with the sign
    flipped to look backwards. The two tools should speak one date language.
 
-Still open, but not blocking: what the mascot actually looks like, and whether
-`looking-back` is a command or a view.
+Both of the questions left open here have since been answered by building
+them. The mascot is `(-.-)` — tuki's face with its eyes closed, because two
+siblings sharing a face and wearing it differently says more than a second
+piece of artwork would, and a drawing at the top of an empty page would be
+exactly the expectant thing mori is not. It appears when you arrive and when
+you leave, and nowhere in between.
+
+`looking-back` is a command rather than a view: it is a thing you do with a
+coffee, not a thing you do while writing, and putting it behind a key in the
+writing surface would have made it feel like something to check.

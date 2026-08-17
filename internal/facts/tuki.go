@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/rmpato/mori/internal/entry"
@@ -46,13 +47,27 @@ type tukiTask struct {
 }
 
 // tuki is a Source backed by tuki's task file.
-type tuki struct{ path string }
+//
+// It holds on to what it last read, and re-reads only when the file has
+// actually changed, because asking about a month means asking about thirty
+// days and there is no sense parsing the same JSON thirty times. Keying the
+// cache on the modification time means a task ticked off in tuki while mori
+// is open still shows up the next time you look.
+type tuki struct {
+	path string
+
+	mu     sync.Mutex
+	loaded bool
+	mod    time.Time
+	size   int64
+	file   tukiFile
+}
 
 // Tuki returns a read-only view of tuki's tasks.
 //
 // mori never writes to this file. Not by default, and not behind a flag: mori
 // reads from tuki, and mori does not control tuki.
-func Tuki(path string) Source { return tuki{path: path} }
+func Tuki(path string) Source { return &tuki{path: path} }
 
 // TukiPath resolves where tuki keeps its file, using tuki's own rules so the
 // two agree without either having to ask the other.
@@ -88,22 +103,10 @@ func Available(path string) bool {
 // last March it is the best reading available from what tuki knows now —
 // which is the right trade for something being offered as context beside a
 // blank page.
-func (t tuki) Day(d entry.Date) (Snapshot, error) {
-	raw, err := os.ReadFile(t.path)
-	if errors.Is(err, fs.ErrNotExist) {
-		// No tuki, no context, no complaint.
-		return Snapshot{Source: "tuki"}, nil
-	}
+func (t *tuki) Day(d entry.Date) (Snapshot, error) {
+	file, err := t.load()
 	if err != nil {
-		return Snapshot{}, fmt.Errorf("reading tuki's tasks: %w", err)
-	}
-
-	var file tukiFile
-	if err := json.Unmarshal(raw, &file); err != nil {
-		return Snapshot{}, fmt.Errorf("%s doesn't look like a tuki file: %w", t.path, err)
-	}
-	if file.Version > tukiVersion {
-		return Snapshot{}, fmt.Errorf("%w (%s is version %d)", ErrUnsupported, t.path, file.Version)
+		return Snapshot{}, err
 	}
 
 	s := Snapshot{Source: "tuki"}
@@ -123,6 +126,44 @@ func (t tuki) Day(d entry.Date) (Snapshot, error) {
 		}
 	}
 	return s, nil
+}
+
+// load reads tuki's file, or hands back what was read last time if nothing
+// about it has changed since.
+func (t *tuki) load() (tukiFile, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	fi, err := os.Stat(t.path)
+	if errors.Is(err, fs.ErrNotExist) {
+		// No tuki, no context, no complaint.
+		return tukiFile{}, nil
+	}
+	if err != nil {
+		return tukiFile{}, fmt.Errorf("reading tuki's tasks: %w", err)
+	}
+	if t.loaded && fi.ModTime().Equal(t.mod) && fi.Size() == t.size {
+		return t.file, nil
+	}
+
+	raw, err := os.ReadFile(t.path)
+	if errors.Is(err, fs.ErrNotExist) {
+		return tukiFile{}, nil
+	}
+	if err != nil {
+		return tukiFile{}, fmt.Errorf("reading tuki's tasks: %w", err)
+	}
+
+	var file tukiFile
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return tukiFile{}, fmt.Errorf("%s doesn't look like a tuki file: %w", t.path, err)
+	}
+	if file.Version > tukiVersion {
+		return tukiFile{}, fmt.Errorf("%w (%s is version %d)", ErrUnsupported, t.path, file.Version)
+	}
+
+	t.file, t.loaded, t.mod, t.size = file, true, fi.ModTime(), fi.Size()
+	return file, nil
 }
 
 // openOn reports whether an unfinished task was on your plate that day.

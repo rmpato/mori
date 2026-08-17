@@ -36,8 +36,7 @@ func Run(s *store.Store, d entry.Date, src facts.Source, out io.Writer) error {
 // farewell leaves one quiet line in your scrollback: the day you were on, and
 // nothing else. No count, no streak, no remark about how much you wrote.
 func farewell(out io.Writer, m *Model) {
-	glyph := ui.SeasonOf(m.date, m.south).Glyph()
-	line := lipgloss.NewStyle().Foreground(m.theme.Brand).Render(glyph) +
+	line := lipgloss.NewStyle().Foreground(m.theme.Brand).Render(ui.FaceCalm) +
 		lipgloss.NewStyle().Foreground(m.theme.Muted).Render("  "+m.date.Human())
 	fmt.Fprintln(out, line)
 }
