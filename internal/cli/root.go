@@ -87,6 +87,7 @@ anywhere.`,
 		newSearchCmd(),
 		newTagsCmd(),
 		newPathCmd(),
+		newUpdateCmd(),
 	)
 	return root
 }

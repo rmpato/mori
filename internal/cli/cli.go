@@ -3,6 +3,7 @@
 package cli
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -173,6 +174,20 @@ func toJSON(en entry.Entry) entryJSON {
 		Words:    en.Words(),
 		Sections: en.Sections(),
 	}
+}
+
+// confirm asks a yes/no question, but only when there's a human to ask.
+func confirm(e *env, in io.Reader, question string) (bool, error) {
+	if !e.tty {
+		return false, fmt.Errorf("%s — rerun with --yes", question)
+	}
+	e.printf("  %s %s ", e.theme.Prompt.Render(question), e.theme.Hint.Render("[y/N]"))
+	line, err := bufio.NewReader(in).ReadString('\n')
+	if err != nil && line == "" {
+		return false, nil
+	}
+	answer := strings.ToLower(strings.TrimSpace(line))
+	return answer == "y" || answer == "yes", nil
 }
 
 func writeJSON(w io.Writer, v any) error {

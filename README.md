@@ -13,6 +13,24 @@ mori → what happened?
 Your pages are plain Markdown files on your own machine, one per day. No
 account, no cloud, no network, nothing sent anywhere.
 
+## Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/rmpato/mori/main/install.sh | sh
+```
+
+Or with Go:
+
+```sh
+go install github.com/rmpato/mori@latest
+```
+
+The installer checks the download against the release's own sha256 checksum
+before it installs anything, and writes nothing outside the install directory
+and one line in your shell config. Later, `mori update` does the same thing
+for the binary you already have — it is the only command that touches the
+network, and your journal is never part of it.
+
 ## Using it
 
 ```bash
@@ -119,6 +137,11 @@ wrote it.
 make build
 make check   # fmt, vet, test
 ```
+
+Releases are cut by tagging: `git tag v0.1.0 && git push --tags` runs
+GoReleaser from CI. The archive names in `.goreleaser.yaml` are load-bearing —
+`install.sh` and `mori update` both construct them, and a test in
+`internal/update` fails if the three ever stop agreeing.
 
 ## Design
 
