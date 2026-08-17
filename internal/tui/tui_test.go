@@ -564,6 +564,52 @@ func TestHelp(t *testing.T) {
 	}
 }
 
+// The footer has to fit the page, not merely the terminal.
+//
+// A help line longer than mori's 76-column column doesn't announce itself: on
+// a narrow terminal it silently loses its tail, and on a wide one it runs out
+// past the rule it is supposed to sit under. Measuring it against the rule
+// catches both.
+func TestTheFooterFitsThePage(t *testing.T) {
+	h := newHarness(t, map[entry.Date]string{aug17: "a quiet day"})
+
+	for _, width := range []int{80, 84, 100, 140, 200} {
+		h.send(tea.WindowSizeMsg{Width: width, Height: 30})
+		screen := h.screen()
+
+		rule, footer := ansi.StringWidth(lastRule(screen)), ansi.StringWidth(lastLine(screen))
+		if footer > rule {
+			t.Errorf("at %d cols the footer is %d wide but the page is %d:\n%s",
+				width, footer, rule, lastLine(screen))
+		}
+		if !strings.Contains(lastLine(screen), "quit") {
+			t.Errorf("at %d cols the footer lost its tail:\n%s", width, lastLine(screen))
+		}
+	}
+}
+
+// lastLine is the final non-empty line of a frame; lastRule is the last of
+// mori's horizontal rules, which is exactly as wide as the page.
+func lastLine(screen string) string {
+	lines := strings.Split(strings.TrimRight(screen, "\n"), "\n")
+	for i := len(lines) - 1; i >= 0; i-- {
+		if strings.TrimSpace(lines[i]) != "" {
+			return lines[i]
+		}
+	}
+	return ""
+}
+
+func lastRule(screen string) string {
+	var rule string
+	for _, line := range strings.Split(screen, "\n") {
+		if strings.Contains(line, "─") {
+			rule = line
+		}
+	}
+	return rule
+}
+
 // A terminal can always be smaller than any layout is willing to be.
 func TestTheFrameAlwaysFits(t *testing.T) {
 	h := newHarness(t, map[entry.Date]string{

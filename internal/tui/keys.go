@@ -81,8 +81,20 @@ func DefaultKeys() KeyMap {
 }
 
 // ShortHelp is the one-line footer.
+//
+// The day keys are described as one entry rather than two. Spelled out in
+// full — "←/h previous day • →/l next day" — the line comes to 83 characters,
+// which does not fit in mori's 76-column page on any terminal, so the last
+// thing in it silently loses its tail.
 func (k KeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.PrevDay, k.NextDay, k.Write, k.Calendar, k.Search, k.Help, k.Quit}
+	return []key.Binding{
+		relabel(k.PrevDay, "←→", "day"),
+		k.Write,
+		k.Calendar,
+		k.Search,
+		k.Help,
+		k.Quit,
+	}
 }
 
 // FullHelp is the '?' view.

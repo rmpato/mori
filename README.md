@@ -2,23 +2,23 @@
 
 > Remember your days, not just your tasks.
 
-```
-(-.-)
-```
+A private, local-first journal that lives in your terminal. One plain Markdown
+file per day. No account, no cloud, no streaks, no scores. You type `mori`,
+and today's page is open.
 
 **[rmpato.github.io/mori](https://rmpato.github.io/mori/)**
 
-mori is a private, local-first journal that lives in your terminal. It is the
-quiet companion to [tuki](https://github.com/rmpato/tuki) — same face, eyes
-closed:
+![mori running in a terminal: Monday, August 17 2026, a mood of "calm", a
+page written in two sittings with a 23:04 timestamp between them, and tags
+picked out in green](docs/screenshot.png)
+
+It has a sibling. [tuki](https://github.com/rmpato/tuki) keeps the things you
+mean to do; mori keeps what happened — same face, eyes closed.
 
 ```
 tuki → what do I need to do?
 mori → what happened?
 ```
-
-Your pages are plain Markdown files on your own machine, one per day. No
-account, no cloud, no network, nothing sent anywhere.
 
 ## Install
 
@@ -199,6 +199,9 @@ wrote it.
 make build
 make check   # fmt, vet, test
 ```
+
+[`runbooks/`](runbooks/) covers releasing, the website, regenerating the
+screenshot, and finding your way around the code.
 
 Releases are cut by tagging: `git tag v0.1.0 && git push --tags` runs
 GoReleaser from CI. The archive names in `.goreleaser.yaml` are load-bearing —

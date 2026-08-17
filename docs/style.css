@@ -303,6 +303,17 @@ button.copy.done  { color: var(--moss); }
   font-weight: 700; border-radius: 2px;
 }
 
+/* The hero is a real capture, so it carries the terminal's own dark whatever
+   the page's theme is. Its corners are already transparent — see
+   tools/round_corners.py — so it needs no radius of its own, and no border
+   that would show through them. */
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
 figure { margin: 0; }
 figcaption {
   margin-top: .85rem;
