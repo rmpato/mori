@@ -6,8 +6,9 @@ mori is a private, local-first journal that lives in the terminal. It is the
 quiet half of a two-app ecosystem: **tuki asks what you need to do, mori asks
 what happened.**
 
-This document proposes the architecture, data model, storage, package layout,
-TUI structure, and MVP scope. Nothing here is implemented yet.
+This document is the architecture, data model, storage, package layout, TUI
+structure, and MVP scope. It was written before any code was, and is kept
+true as the code catches up — §12 tracks how far along that is.
 
 ---
 
@@ -383,7 +384,13 @@ mean.
 returns to reading and saves, `ctrl+s` saves without leaving. No modal editing
 inside mori; that is what `E` is for. Pressing `↵` on a day you already wrote
 in puts the cursor at the end of the page, adding a `## HH:MM` section heading
-first if you've been away more than a couple of hours.
+first if you've been away more than a couple of hours — and dropping that
+heading again if you leave without writing under it, because a sitting that
+didn't happen shouldn't leave a mark.
+
+While you are writing, the keyboard belongs to the writing: `h`, `q`, `n` and
+the rest are letters, not commands. `esc` and `ctrl+c` are the only two keys
+mori keeps for itself, and both of them save.
 
 **calendar** — `h/l` days, `j/k` weeks, `[`/`]` months, `↵` opens the day,
 `esc` back. Days with entries carry a `●`; today gets a ring; the current
@@ -554,14 +561,14 @@ you write, and it never appears at the top of an empty page looking expectant.
 
 **Milestones**
 
-| | |
-|---|---|
-| **M0** | `entry` + `store` + tests; `mori path`, `mori today`, `mori show` |
-| **M1** | TUI: read + write + day navigation + autosave + theme |
-| **M2** | calendar, search, tags, mood, `$EDITOR` |
-| **M3** | release plumbing — Makefile, goreleaser, install.sh, CI, README |
-| **M4** | `facts` + tuki bridge + `--from-tuki` + config |
-| **M5** | polish: mascot, seasons, `looking-back` |
+| | | |
+|---|---|---|
+| **M0** | `entry` + `store` + tests; `mori path`, `mori today`, `mori show` | done |
+| **M1** | TUI: read + write + day navigation + autosave + theme | done |
+| **M2** | calendar, search, tags, mood, `$EDITOR` | |
+| **M3** | release plumbing — Makefile, goreleaser, install.sh, CI, README | |
+| **M4** | `facts` + tuki bridge + `--from-tuki` + config | |
+| **M5** | polish: mascot, seasons, `looking-back` | |
 
 M0–M3 is a real, finished, releasable journal that has never heard of tuki.
 That is the point.

@@ -13,10 +13,50 @@ mori → what happened?
 Your pages are plain Markdown files on your own machine, one per day. No
 account, no cloud, no network, nothing sent anywhere.
 
-## Where it is
+## Using it
 
-mori is early. The domain, the storage layer, and the scripting commands are
-done and tested; the full-screen interface is next.
+```bash
+mori
+```
+
+opens today's page, ready to write in. There is no "new entry" step — every
+day already exists, most of them are simply empty.
+
+```
+🌿  Monday, August 17, 2026                                    today
+────────────────────────────────────────────────────────────────────
+
+  Today was actually pretty good.
+
+  I finally started working on that little Go project I've been
+  thinking about. It feels nice to build something small just
+  because I want to. #go
+
+  23:04
+
+  Went back to it after dinner and got the storage layer working.
+
+────────────────────────────────────────────────────────────────────
+←/h previous day • →/l next day • ↵ write • t today • ? keys • q quit
+```
+
+Horizontal moves through time, vertical moves through the page.
+
+| key | |
+|---|---|
+| `←` `h` / `→` `l` | previous / next day |
+| `↑` `k` / `↓` `j` | scroll |
+| `↵` `i` | write |
+| `esc` | done writing |
+| `n` | new section |
+| `t` | today |
+| `g` | go to a date |
+| `?` `q` | keys, quit |
+
+Your writing is saved when you pause, when you stop, and when you leave. You
+should never have to think about it.
+
+mori also works in pipes and scripts:
 
 ```bash
 mori today                 # print today's page
@@ -24,13 +64,12 @@ mori show yesterday        # any day: fri, -3d, 2026-08-17, "17 aug"
 mori show 2026-08-17 --json
 mori path                  # where the journal lives
 mori path yesterday        # the file for a day, whether or not it exists yet
-```
 
-Until the interface lands, this is enough to write with:
-
-```bash
 $EDITOR "$(mori path today)"
 ```
+
+Search, a calendar, tags, and the optional [tuki](https://github.com/rmpato/tuki)
+bridge are on the way — see the design doc below.
 
 ## Where your journal lives
 

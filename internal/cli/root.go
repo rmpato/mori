@@ -8,6 +8,9 @@ import (
 
 	"github.com/charmbracelet/fang"
 	"github.com/spf13/cobra"
+
+	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/tui"
 )
 
 // Version and Commit are stamped at build time with -ldflags. When they
@@ -48,8 +51,8 @@ func NewRoot() *cobra.Command {
 		Short: "a quiet place to remember your days",
 		Long: `mori keeps a journal in your terminal.
 
-Running mori with no arguments opens today's page. Everything else is here so
-mori works in scripts and pipes too.
+Running mori with no arguments opens today's page, ready to write in.
+Everything else is here so mori works in scripts and pipes too.
 
   mori today
   mori show yesterday
@@ -61,9 +64,16 @@ anywhere.`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			// The full-screen interface arrives in the next milestone. Until
-			// then, bare `mori` does what a pipe would get: today's page.
-			return runShow(cmd, nil, showOptions{})
+			e, err := newEnv(cmd)
+			if err != nil {
+				return err
+			}
+			// Piping `mori` somewhere should give you today's page, not an
+			// interface nobody can see.
+			if !e.tty {
+				return runShow(cmd, nil, showOptions{})
+			}
+			return tui.Run(e.store, entry.DateOf(e.now), e.out)
 		},
 	}
 

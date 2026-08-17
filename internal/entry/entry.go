@@ -184,6 +184,18 @@ func headingTime(line string) (string, bool) {
 // SectionHeading is the line mori writes when you come back to a day later.
 func SectionHeading(t time.Time) string { return "## " + t.Format("15:04") }
 
+// TrimTrailingEmptySection drops a section heading with nothing underneath
+// it. mori stamps the page when you sit back down, and if you then don't
+// write anything, the sitting didn't happen and shouldn't leave a mark.
+func TrimTrailingEmptySection(body string) string {
+	trimmed := strings.TrimRight(body, " \t\n")
+	i := strings.LastIndexByte(trimmed, '\n')
+	if !isSectionHeading(trimmed[i+1:]) {
+		return body
+	}
+	return strings.TrimRight(trimmed[:i+1], " \t\n")
+}
+
 // Sections splits the page into the sittings it was written in.
 //
 // This is a reading of the body, never a second kind of object: Body stays

@@ -117,6 +117,21 @@ func (s *Store) Has(d entry.Date) (bool, error) {
 	return true, nil
 }
 
+// LastWritten is when a day's file was last touched, and whether it exists at
+// all. It answers one question — have you been away from this page long
+// enough that coming back to it counts as a new sitting — so a filesystem
+// timestamp that a copy or a checkout might have disturbed is good enough.
+func (s *Store) LastWritten(d entry.Date) (time.Time, bool, error) {
+	fi, err := os.Stat(s.Path(d))
+	if errors.Is(err, fs.ErrNotExist) {
+		return time.Time{}, false, nil
+	}
+	if err != nil {
+		return time.Time{}, false, fmt.Errorf("checking %s: %w", d, err)
+	}
+	return fi.ModTime(), true, nil
+}
+
 // Put writes a day.
 //
 // Emptying a page removes the file rather than leaving a husk behind, so the
