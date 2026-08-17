@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#111410"/>
+  <!-- A sprout: one stem, two leaves. mori at its smallest. -->
+  <path d="M32 50V28" stroke="#8cc9a0" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M32 33c-9 0-14-5-14-12 8 0 14 4 14 12z" fill="#8cc9a0"/>
+  <path d="M32 29c0-8 5-13 13-13 0 8-5 13-13 13z" fill="#5f9d74"/>
+</svg>

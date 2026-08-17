@@ -99,7 +99,10 @@ func (m *Model) renderCalendar() []string {
 		rows = append(rows, m.center(strings.Join(week, " "), 20))
 	}
 
-	rows = append(rows, "", m.center(m.theme.Hint.Render("● a page"), 20))
+	// The key shows an actual day rather than a symbol. A legend that says
+	// "● a page" beside a grid with no dots in it is a legend that lies.
+	sample := lipgloss.NewStyle().Foreground(m.theme.Brand).Bold(true).Render("17")
+	rows = append(rows, "", m.center(sample+m.theme.Hint.Render("  a page"), 20))
 
 	pad := m.gutter() + "  "
 	for i, r := range rows {

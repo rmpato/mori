@@ -1,0 +1,511 @@
+/* mori — the site.
+ *
+ * tuki's page is a terminal: dark, monospaced, quick. This one is paper.
+ * mori is where you go to read, so the page reads like something printed —
+ * a serif column, wide margins, hairline rules, and a leaf in the corner.
+ *
+ * No webfonts, no analytics, no third-party anything. A page about a private
+ * local journal has no business making network requests, so it doesn't make
+ * any: every typeface here is one your computer already has.
+ */
+
+:root {
+  /* Paper. */
+  --paper:      #faf8f3;
+  --paper-2:    #f3efe6;
+  --paper-3:    #ece7da;
+  --ink:        #1b2018;
+  --ink-soft:   #4c5348;
+  --ink-faint:  #8d9288;
+  --rule:       #ded8c9;
+  --rule-soft:  #eae5d8;
+
+  /* Moss, and a little autumn for the rare accent. */
+  --moss:       #3c6b49;
+  --moss-deep:  #2c5136;
+  --moss-wash:  #eaf0e9;
+  --gold:       #8a6a00;
+
+  --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino,
+           "Book Antiqua", Georgia, Cambria, "Times New Roman", serif;
+  --sans:  ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+           Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+           "Liberation Mono", monospace;
+
+  --col:  34rem;   /* the reading column */
+  --wide: 60rem;   /* terminal spreads and grids */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:     #111410;
+    --paper-2:   #171b15;
+    --paper-3:   #1d221a;
+    --ink:       #e7e6dc;
+    --ink-soft:  #a9aea2;
+    --ink-faint: #6e7368;
+    --rule:      #2a3025;
+    --rule-soft: #21261d;
+
+    --moss:      #8cc9a0;
+    --moss-deep: #a9dcb9;
+    --moss-wash: #17201a;
+    --gold:      #dcc96b;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.62;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------------------------------------------- bones -- */
+
+.col   { width: 100%; max-width: var(--col);  margin-inline: auto; padding-inline: 1.5rem; }
+.wide  { width: 100%; max-width: var(--wide); margin-inline: auto; padding-inline: 1.5rem; }
+
+p { margin: 0 0 1.15em; }
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(var(--moss), var(--moss));
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  padding-bottom: 1px;
+  transition: background-size .18s ease, color .18s ease;
+}
+a:hover { color: var(--moss-deep); background-size: 100% 2px; }
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--paper); padding: .6rem 1rem; z-index: 20;
+}
+.skip:focus { left: 1rem; top: 1rem; }
+
+:focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; border-radius: 2px; }
+
+/* A label: the little letterspaced sans line above a heading. */
+.label {
+  font-family: var(--sans);
+  font-size: .688rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 .9rem;
+}
+.label .num { color: var(--moss); }
+
+h1, h2 { font-weight: 500; letter-spacing: -.012em; }
+
+h2 {
+  font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.4rem);
+  line-height: 1.12;
+  margin: 0 0 1rem;
+}
+/* A serif subhead at 500 reads as a large paragraph, not as a heading.
+   It needs the weight to do the work. */
+h3 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.005em;
+  margin: 3rem 0 .6rem;
+}
+
+.lede { font-size: 1.16rem; color: var(--ink-soft); }
+
+.aside {
+  font-size: .95rem;
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+hr.rule {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: 0;
+}
+
+/* A leaf used as an ornament between sections. */
+.ornament {
+  text-align: center;
+  color: var(--rule);
+  font-size: 1rem;
+  letter-spacing: .8em;
+  margin: 4.5rem 0;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------ masthead -- */
+
+.masthead {
+  padding: clamp(3.5rem, 9vw, 7rem) 0 0;
+  text-align: center;
+}
+
+.face {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  color: var(--moss);
+  letter-spacing: .06em;
+  display: block;
+  margin-bottom: 1.6rem;
+}
+
+.wordmark {
+  font-size: clamp(3.4rem, 2rem + 7vw, 6rem);
+  line-height: .9;
+  margin: 0;
+  letter-spacing: -.03em;
+  font-weight: 400;
+}
+
+.tagline {
+  font-size: clamp(1.15rem, 1rem + .6vw, 1.45rem);
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 1.2rem 0 0;
+  text-wrap: balance;
+}
+
+.masthead-rule {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin: 2.6rem auto 0;
+  max-width: 22rem;
+  color: var(--ink-faint);
+  font-family: var(--sans);
+  font-size: .688rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.masthead-rule::before,
+.masthead-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* ------------------------------------------------------------- install -- */
+
+.install {
+  margin: 2.8rem auto 0;
+  max-width: 40rem;
+  padding-inline: 1.5rem;
+}
+
+.cmd {
+  display: flex;
+  align-items: stretch;
+  gap: .5rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.cmd code {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: .78rem;
+  padding: .82rem .95rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  scrollbar-width: none;
+}
+.cmd code::-webkit-scrollbar { display: none; }
+
+button.copy {
+  font-family: var(--sans);
+  font-size: .66rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink-faint);
+  padding: 0 1rem;
+  cursor: pointer;
+  transition: color .15s ease, background .15s ease;
+}
+button.copy:hover { color: var(--moss); background: var(--moss-wash); }
+button.copy.done  { color: var(--moss); }
+
+.install-note {
+  margin: .8rem 0 0;
+  font-size: .92rem;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.hero-links {
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: 1.8rem;
+}
+.btn {
+  font-family: var(--sans);
+  font-size: .75rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .58rem 1.15rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  color: var(--ink-soft);
+  background: none;
+  background-image: none;
+  transition: border-color .18s ease, color .18s ease;
+}
+.btn:hover { border-color: var(--moss); color: var(--moss); background-image: none; }
+.btn.solid { background: var(--moss); border-color: var(--moss); color: var(--paper); }
+.btn.solid:hover { background: var(--moss-deep); border-color: var(--moss-deep); color: var(--paper); }
+
+/* -------------------------------------------------------------- terminal -- */
+
+.screen {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 1.35rem 1.1rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  /* Shrink to the width of the terminal inside it, then centre. A fixed-width
+     box around 80 columns of monospace leaves a lake of empty space on the
+     right, which reads as a mistake rather than as margin. */
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+}
+.screen pre {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: clamp(.62rem, .35rem + .72vw, .8rem);
+  line-height: 1.62;
+  color: var(--ink);
+  white-space: pre;
+}
+.screen .dim   { color: var(--ink-faint); }
+.screen .soft  { color: var(--ink-soft); }
+.screen .moss  { color: var(--moss); }
+.screen .gold  { color: var(--gold); }
+.screen .bold  { color: var(--moss); font-weight: 700; }
+.screen .mark  { background: var(--moss-wash); color: var(--moss-deep); font-weight: 700; }
+.screen .today { text-decoration: underline; text-underline-offset: 2px; }
+.screen .cursor{
+  background: var(--moss); color: var(--paper-2);
+  font-weight: 700; border-radius: 2px;
+}
+
+figure { margin: 0; }
+figcaption {
+  margin-top: .85rem;
+  font-size: .9rem;
+  color: var(--ink-faint);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------- sections -- */
+
+section { padding: 1rem 0; }
+
+/* margin-block, not the shorthand: a shorthand here would flatten the
+   margin-inline:auto that .wide uses to centre itself. */
+.spread { margin-block: 2.6rem; }
+
+.two-up {
+  display: grid;
+  gap: 2.4rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 46rem) {
+  .two-up { grid-template-columns: 1fr 1fr; gap: 3rem; }
+}
+
+/* The opening paragraph of a section gets a drop cap. */
+.dropcap::first-letter {
+  float: left;
+  font-size: 3.5em;
+  line-height: .82;
+  padding: .06em .1em 0 0;
+  color: var(--moss);
+  font-weight: 400;
+}
+
+blockquote.pull {
+  margin: 3rem 0;
+  padding: 0;
+  text-align: center;
+  font-size: clamp(1.3rem, 1.05rem + 1vw, 1.75rem);
+  line-height: 1.35;
+  font-style: italic;
+  color: var(--ink);
+  text-wrap: balance;
+}
+blockquote.pull span { color: var(--moss); font-style: normal; }
+
+/* The keyboard table. */
+.keys {
+  margin: 1.6rem 0 0;
+  border-top: 1px solid var(--rule-soft);
+}
+.keys div {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.keys kbd {
+  font-family: var(--mono);
+  font-size: .76rem;
+  color: var(--moss);
+  min-width: 6.5rem;
+  flex: none;
+}
+.keys span { color: var(--ink-soft); font-size: .97rem; }
+
+/* The "what mori doesn't do" list. */
+.nots {
+  list-style: none;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 2.5rem;
+}
+@media (max-width: 34rem) { .nots { columns: 1; } }
+.nots li {
+  padding: .42rem 0;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  break-inside: avoid;
+}
+.nots li::before {
+  content: "no";
+  font-family: var(--sans);
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: .1rem .35rem;
+  margin-right: .6rem;
+  vertical-align: .12em;
+}
+
+/* Code blocks in prose. */
+pre.code {
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .95rem 1.1rem;
+  overflow-x: auto;
+  margin: 1.1rem 0;
+  font-size: .8rem;
+  line-height: 1.75;
+}
+pre.code code { font-family: var(--mono); color: var(--ink-soft); }
+pre.code .p { color: var(--moss); user-select: none; }
+pre.code .c { color: var(--ink-faint); }
+
+code.inline {
+  font-family: var(--mono);
+  font-size: .82em;
+  background: var(--paper-3);
+  border-radius: 3px;
+  padding: .1em .34em;
+}
+
+/* Tabs, for the install section. */
+.tablist {
+  display: flex;
+  gap: .3rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.tablist button {
+  font-family: var(--sans);
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--ink-faint);
+  padding: .5rem .75rem;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+.tablist button[aria-selected="true"] { color: var(--moss); border-bottom-color: var(--moss); }
+.tablist button:hover { color: var(--ink); }
+
+/* The two-tool section. */
+.pair {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 2.4rem 0;
+}
+@media (min-width: 44rem) { .pair { grid-template-columns: 1fr 1fr; } }
+.pair > div { padding: 1.9rem 1.7rem; }
+.pair > div + div { border-top: 1px solid var(--rule); }
+@media (min-width: 44rem) {
+  .pair > div + div { border-top: 0; border-left: 1px solid var(--rule); }
+}
+.pair h3 { margin: 0 0 .2rem; font-size: 1.5rem; }
+.pair .who { font-family: var(--mono); font-size: .74rem; color: var(--ink-faint); letter-spacing: .04em; }
+.pair p { font-size: .98rem; color: var(--ink-soft); margin-top: .9rem; }
+.pair .tuki h3 { color: var(--gold); }
+.pair .mori h3 { color: var(--moss); }
+
+/* The stack list. */
+.stack { list-style: none; padding: 0; margin: 1.4rem 0 0; }
+.stack li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .55rem 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: .97rem;
+}
+.stack span { color: var(--ink-faint); font-style: italic; }
+
+/* ---------------------------------------------------------------- foot -- */
+
+footer {
+  margin-top: 5rem;
+  border-top: 1px solid var(--rule);
+  padding: 3rem 0 4rem;
+  text-align: center;
+}
+footer .face { font-size: 1.15rem; margin-bottom: 1.1rem; }
+footer p { font-size: .92rem; color: var(--ink-faint); }
+footer .links a { margin: 0 .35rem; }

@@ -6,6 +6,8 @@
 (-.-)
 ```
 
+**[rmpato.github.io/mori](https://rmpato.github.io/mori/)**
+
 mori is a private, local-first journal that lives in your terminal. It is the
 quiet companion to [tuki](https://github.com/rmpato/tuki) — same face, eyes
 closed:
@@ -206,7 +208,12 @@ GoReleaser from CI. The archive names in `.goreleaser.yaml` are load-bearing —
 ## Design
 
 [`docs/DESIGN.md`](docs/DESIGN.md) has the architecture, the data model, the
-storage decisions, the planned interface, and the roadmap.
+storage decisions, the interface, and the roadmap.
+
+[`docs/WEB.md`](docs/WEB.md) is the design direction for `mori web`: an
+optional local HTTP server so the browser can be a second, read-first
+interface onto the same journal. Not built yet — the document exists so the
+architecture can be checked against it before it is.
 
 ## License
 
