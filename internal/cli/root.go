@@ -74,7 +74,8 @@ anywhere.`,
 			if !e.tty {
 				return runShow(cmd, nil, showOptions{})
 			}
-			return tui.Run(e.store, entry.DateOf(e.now), e.out)
+			src, _ := e.tuki()
+			return tui.Run(e.store, entry.DateOf(e.now), src, e.out)
 		},
 	}
 
@@ -87,6 +88,7 @@ anywhere.`,
 		newSearchCmd(),
 		newTagsCmd(),
 		newPathCmd(),
+		newConfigCmd(),
 		newUpdateCmd(),
 	)
 	return root

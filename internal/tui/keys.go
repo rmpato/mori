@@ -31,6 +31,7 @@ type KeyMap struct {
 	Search    key.Binding
 	Tags      key.Binding
 	Mood      key.Binding
+	Context   key.Binding
 	PrevMonth key.Binding
 	NextMonth key.Binding
 	Select    key.Binding
@@ -58,14 +59,15 @@ func DefaultKeys() KeyMap {
 
 		Write:   key.NewBinding(key.WithKeys("enter", "i"), key.WithHelp("↵", "write")),
 		Section: key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new section")),
-		Done:    key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "done writing")),
+		Done:    key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "done")),
 		Save:    key.NewBinding(key.WithKeys("ctrl+s"), key.WithHelp("ctrl+s", "save")),
-		Editor:  key.NewBinding(key.WithKeys("E"), key.WithHelp("E", "open in $EDITOR")),
+		Editor:  key.NewBinding(key.WithKeys("E"), key.WithHelp("E", "$EDITOR")),
 
 		Calendar:  key.NewBinding(key.WithKeys("c"), key.WithHelp("c", "calendar")),
 		Search:    key.NewBinding(key.WithKeys("/"), key.WithHelp("/", "search")),
 		Tags:      key.NewBinding(key.WithKeys("#"), key.WithHelp("#", "tags")),
 		Mood:      key.NewBinding(key.WithKeys("m"), key.WithHelp("m", "mood")),
+		Context:   key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "context")),
 		PrevMonth: key.NewBinding(key.WithKeys("[", ","), key.WithHelp("[", "previous month")),
 		NextMonth: key.NewBinding(key.WithKeys("]", "."), key.WithHelp("]", "next month")),
 		Select:    key.NewBinding(key.WithKeys("enter"), key.WithHelp("↵", "open")),
@@ -88,15 +90,15 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.PrevDay, k.NextDay, k.Today, k.Goto},
 		{k.Up, k.Down, k.Top, k.End},
-		{k.Write, k.Section, k.Editor, k.Mood},
-		{k.Calendar, k.Search, k.Tags, k.Help, k.Quit},
+		{k.Write, k.Section, k.Done, k.Save, k.Editor, k.Mood},
+		{k.Calendar, k.Search, k.Tags, k.Context, k.Help, k.Quit},
 	}
 }
 
 // writingHelp is the footer while you're actually writing, where most of the
 // keys above belong to the text rather than to mori.
 func (k KeyMap) writingHelp() []key.Binding {
-	return []key.Binding{k.Done, k.Save}
+	return []key.Binding{relabel(k.Done, "esc", "done writing"), k.Save}
 }
 
 // calendarHelp is the footer in the month view, where up and down are weeks
@@ -109,6 +111,11 @@ func (k KeyMap) calendarHelp() []key.Binding {
 		k.Select,
 		k.Back,
 	}
+}
+
+// contextHelp is the footer beside what tuki knows.
+func (k KeyMap) contextHelp() []key.Binding {
+	return []key.Binding{relabel(k.Select, "↵", "start a page from this"), k.Back}
 }
 
 // listHelp is the footer under a list of results or tags.

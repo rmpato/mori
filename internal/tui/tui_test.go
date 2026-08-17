@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/facts"
 	"github.com/rmpato/mori/internal/store"
 )
 
@@ -30,6 +31,13 @@ type harness struct {
 
 func newHarness(t *testing.T, seed map[entry.Date]string) *harness {
 	t.Helper()
+	return newHarnessWith(t, seed, nil)
+}
+
+// newHarnessWith is the same, plus something that knows about the day —
+// which mori works perfectly well without, and does by default here.
+func newHarnessWith(t *testing.T, seed map[entry.Date]string, src facts.Source) *harness {
+	t.Helper()
 
 	s := store.New(filepath.Join(t.TempDir(), "journal"))
 	for d, body := range seed {
@@ -38,7 +46,7 @@ func newHarness(t *testing.T, seed map[entry.Date]string) *harness {
 		}
 	}
 
-	m := New(s, aug17)
+	m := New(s, aug17, src)
 	m.now = func() time.Time { return clock }
 
 	h := &harness{t: t, m: m, store: s}
@@ -175,6 +183,8 @@ func keyPress(name string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: tea.KeyEnter}
 	case "esc":
 		return tea.KeyPressMsg{Code: tea.KeyEscape}
+	case "tab":
+		return tea.KeyPressMsg{Code: tea.KeyTab}
 	case "left":
 		return tea.KeyPressMsg{Code: tea.KeyLeft}
 	case "right":

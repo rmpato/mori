@@ -46,6 +46,8 @@ func (m *Model) body() []string {
 		return m.renderResults()
 	case modeTags:
 		return m.renderTags()
+	case modeContext:
+		return m.renderContext()
 	default:
 		return m.renderPage()
 	}
@@ -83,6 +85,8 @@ func (m *Model) renderHeader() string {
 		return m.plainHeader(m.date, "search")
 	case modeTags:
 		return m.plainHeader(m.date, "tags")
+	case modeContext:
+		return m.plainHeader(m.date, m.date.Human())
 	}
 
 	glyph := ui.SeasonOf(m.date, m.south).Glyph()
@@ -137,6 +141,8 @@ func (m *Model) renderFooter() string {
 		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.calendarHelp()))
 	case modeTags:
 		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.listHelp()))
+	case modeContext:
+		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.contextHelp()))
 	default:
 		if m.help.ShowAll {
 			// The full help is several lines, and every one of them needs the

@@ -74,6 +74,7 @@ Horizontal moves through time, vertical moves through the page.
 | `#` | tags |
 | `m` | mood |
 | `E` | open in `$EDITOR` |
+| `tab` | today's context, from tuki |
 | `?` `q` | keys, quit |
 
 The calendar shows the month with the days you wrote on picked out. Search
@@ -102,8 +103,42 @@ Bare search words match the start of a word, so `photo` finds `photography`.
 A quoted phrase is matched exactly. Every printing command takes `--plain`
 (tab-separated) and `--json`.
 
-The optional [tuki](https://github.com/rmpato/tuki) bridge is next — see the
-design doc below.
+## tuki
+
+If you also use [tuki](https://github.com/rmpato/tuki), mori can show you what
+you got done on a day while you decide what to say about it. Press `tab`, or:
+
+```bash
+mori today --from-tuki
+```
+
+```markdown
+# August 17, 2026
+
+## Today
+
+## Things I did
+
+- Finish Go project
+- Read GitOps chapter
+- Go to the gym
+
+## Things I didn't get to
+
+- Edit photography photos
+
+## Notes
+```
+
+That is a scaffold, and it stops there. **tuki holds what you did; mori holds
+what it was like**, and mori will never write the second from the first. The
+words are yours or they aren't worth keeping.
+
+The integration is optional, appears only if tuki is installed, and is
+**read-only**: mori reads tuki's file and never writes to it. `mori config`
+shows where things stand; `{"tuki": {"enabled": false}}` turns it off.
+
+mori works exactly the same with no tuki, and never mentions it.
 
 ## Where your journal lives
 

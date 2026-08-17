@@ -567,7 +567,7 @@ you write, and it never appears at the top of an empty page looking expectant.
 | **M1** | TUI: read + write + day navigation + autosave + theme | done |
 | **M2** | calendar, search, tags, mood, `$EDITOR` | done |
 | **M3** | release plumbing — Makefile, goreleaser, install.sh, CI, README | done |
-| **M4** | `facts` + tuki bridge + `--from-tuki` + config | |
+| **M4** | `facts` + tuki bridge + `--from-tuki` + config | done |
 | **M5** | polish: mascot, seasons, `looking-back` | |
 
 M0–M3 is a real, finished, releasable journal that has never heard of tuki.

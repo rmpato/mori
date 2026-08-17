@@ -15,7 +15,9 @@ import (
 	"github.com/charmbracelet/x/term"
 	"github.com/spf13/cobra"
 
+	"github.com/rmpato/mori/internal/config"
 	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/facts"
 	"github.com/rmpato/mori/internal/store"
 	"github.com/rmpato/mori/internal/ui"
 )
@@ -30,6 +32,9 @@ type env struct {
 	south bool
 	tty   bool
 	now   time.Time
+
+	cfg      config.Config
+	tukiFile string
 }
 
 // newEnv resolves the journal and works out how much decoration is warranted.
@@ -46,16 +51,53 @@ func newEnv(cmd *cobra.Command) (*env, error) {
 		}
 	}
 
+	cfg, tukiFile, err := loadConfig()
+	if err != nil {
+		return nil, err
+	}
+
 	out := cmd.OutOrStdout()
 	return &env{
-		store: s,
-		out:   out,
-		w:     colorprofile.NewWriter(out, os.Environ()),
-		theme: ui.New(ui.PrefersDark()),
-		south: ui.SouthernHemisphere(),
-		tty:   isTerminal(out),
-		now:   time.Now(),
+		store:    s,
+		out:      out,
+		w:        colorprofile.NewWriter(out, os.Environ()),
+		theme:    ui.New(ui.PrefersDark()),
+		south:    ui.SouthernHemisphere(),
+		tty:      isTerminal(out),
+		now:      time.Now(),
+		cfg:      cfg,
+		tukiFile: tukiFile,
 	}, nil
+}
+
+// loadConfig reads the config and works out where tuki's tasks would be.
+func loadConfig() (config.Config, string, error) {
+	path, err := config.Path()
+	if err != nil {
+		return config.Default(), "", err
+	}
+	cfg, err := config.Load(path)
+	if err != nil {
+		return config.Default(), "", err
+	}
+
+	tukiFile := cfg.Tuki.File
+	if tukiFile == "" {
+		if tukiFile, err = facts.TukiPath(); err != nil {
+			return cfg, "", err
+		}
+	}
+	return cfg, tukiFile, nil
+}
+
+// tuki is mori's read-only view of your task list, if there is one to read.
+// The second result is false when tuki isn't installed or you've turned the
+// integration off — in which case mori simply never mentions it.
+func (e *env) tuki() (facts.Source, bool) {
+	if !e.cfg.TukiEnabled(facts.Available(e.tukiFile)) {
+		return nil, false
+	}
+	return facts.Tuki(e.tukiFile), true
 }
 
 // width is how wide the terminal is, or a comfortable default when nobody is

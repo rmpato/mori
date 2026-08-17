@@ -19,8 +19,15 @@ import (
 // test takes its own no-tty path — which is the one scripts get.
 func journal(t *testing.T) (*store.Store, func(args ...string) (string, error)) {
 	t.Helper()
-	dir := filepath.Join(t.TempDir(), "journal")
+	root := t.TempDir()
+	dir := filepath.Join(root, "journal")
 	s := store.New(dir)
+
+	// Point everything mori reads at somewhere that doesn't exist yet, so a
+	// test can never pick up the config or the task list of whoever is
+	// running it.
+	t.Setenv("MORI_CONFIG", filepath.Join(root, "config.json"))
+	t.Setenv("TUKI_FILE", filepath.Join(root, "tasks.json"))
 
 	run := func(args ...string) (string, error) {
 		var buf bytes.Buffer

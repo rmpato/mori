@@ -16,6 +16,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/facts"
 	"github.com/rmpato/mori/internal/search"
 	"github.com/rmpato/mori/internal/store"
 	"github.com/rmpato/mori/internal/ui"
@@ -31,6 +32,7 @@ const (
 	modeCalendar
 	modeSearch
 	modeTags
+	modeContext
 )
 
 const (
@@ -87,6 +89,11 @@ type Model struct {
 	selected int
 	findSeq  int
 
+	// source is what else knows about a day — tuki, when it's installed and
+	// you haven't turned it off. nil means mori never mentions it.
+	source facts.Source
+	snap   facts.Snapshot
+
 	// saveSeq lets a pending autosave recognise that it has been superseded.
 	saveSeq int
 
@@ -106,8 +113,10 @@ type Model struct {
 	now func() time.Time
 }
 
-// New builds the model on a given day.
-func New(s *store.Store, d entry.Date) *Model {
+// New builds the model on a given day. src is what else knows about a day,
+// and may be nil — mori works the same without it, and says nothing about it
+// either way.
+func New(s *store.Store, d entry.Date, src facts.Source) *Model {
 	ta := textarea.New()
 	ta.Prompt = ""
 	ta.ShowLineNumbers = false
@@ -122,15 +131,16 @@ func New(s *store.Store, d entry.Date) *Model {
 	in.SetVirtualCursor(true)
 
 	m := &Model{
-		store: s,
-		keys:  DefaultKeys(),
-		south: ui.SouthernHemisphere(),
-		date:  d,
-		vp:    viewport.New(),
-		ta:    ta,
-		input: in,
-		help:  help.New(),
-		now:   time.Now,
+		store:  s,
+		source: src,
+		keys:   DefaultKeys(),
+		south:  ui.SouthernHemisphere(),
+		date:   d,
+		vp:     viewport.New(),
+		ta:     ta,
+		input:  in,
+		help:   help.New(),
+		now:    time.Now,
 	}
 	m.applyTheme(ui.PrefersDark())
 	m.load(d)
@@ -251,6 +261,17 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.tags = msg.counts
 		m.move(0, len(m.tags))
 
+	case contextDoneMsg:
+		if msg.date != m.date {
+			break // you moved on while tuki was being read
+		}
+		if msg.err != nil {
+			m.setStatus(msg.err.Error())
+			cmds = append(cmds, m.expireStatus())
+			break
+		}
+		m.snap = msg.snap
+
 	case editorDoneMsg:
 		if msg.err != nil {
 			m.setStatus(msg.err.Error())
@@ -297,6 +318,8 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		return m.handleSearchKey(msg), false
 	case modeTags:
 		return m.handleTagsKey(msg), false
+	case modeContext:
+		return m.handleContextKey(msg), false
 	case modeCalendar:
 		if m.handleCalendarKey(msg) {
 			return nil, false
@@ -337,6 +360,9 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 
 	case key.Matches(msg, m.keys.Editor):
 		return m.openEditor(), false
+
+	case key.Matches(msg, m.keys.Context):
+		return m.openContext(), false
 
 	case key.Matches(msg, m.keys.Write):
 		return m.beginWrite(false), false

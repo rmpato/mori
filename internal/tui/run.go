@@ -8,13 +8,14 @@ import (
 	"charm.land/lipgloss/v2"
 
 	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/facts"
 	"github.com/rmpato/mori/internal/store"
 	"github.com/rmpato/mori/internal/ui"
 )
 
 // Run opens mori on a day and returns once you leave it.
-func Run(s *store.Store, d entry.Date, out io.Writer) error {
-	m := New(s, d)
+func Run(s *store.Store, d entry.Date, src facts.Source, out io.Writer) error {
+	m := New(s, d, src)
 
 	final, err := tea.NewProgram(m).Run()
 	if err != nil {
