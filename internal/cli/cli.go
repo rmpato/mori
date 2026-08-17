@@ -57,6 +57,20 @@ func newEnv(cmd *cobra.Command) (*env, error) {
 	}, nil
 }
 
+// width is how wide the terminal is, or a comfortable default when nobody is
+// looking.
+func (e *env) width() int {
+	f, ok := e.out.(*os.File)
+	if !ok {
+		return 80
+	}
+	w, _, err := term.GetSize(f.Fd())
+	if err != nil || w < 20 {
+		return 80
+	}
+	return w
+}
+
 func isTerminal(w io.Writer) bool {
 	f, ok := w.(*os.File)
 	if !ok {

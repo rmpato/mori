@@ -34,7 +34,21 @@ func (m *Model) refresh() {
 
 	m.vp.SetWidth(m.width)
 	m.vp.SetHeight(height)
-	m.vp.SetContentLines(m.renderPage())
+	m.vp.SetContentLines(m.body())
+}
+
+// body is whatever the active mode puts in the middle of the screen.
+func (m *Model) body() []string {
+	switch m.mode {
+	case modeCalendar:
+		return m.renderCalendar()
+	case modeSearch:
+		return m.renderResults()
+	case modeTags:
+		return m.renderTags()
+	default:
+		return m.renderPage()
+	}
 }
 
 // View assembles the screen.
@@ -58,7 +72,19 @@ func (m *Model) View() tea.View {
 
 // renderHeader is the season, the day, and — only when it is worth saying —
 // where that day sits relative to now.
+//
+// The month and list views replace it, because in those you are looking at a
+// shape rather than at a day.
 func (m *Model) renderHeader() string {
+	switch m.mode {
+	case modeCalendar:
+		return m.plainHeader(m.cursor, m.cursor.Full())
+	case modeSearch:
+		return m.plainHeader(m.date, "search")
+	case modeTags:
+		return m.plainHeader(m.date, "tags")
+	}
+
 	glyph := ui.SeasonOf(m.date, m.south).Glyph()
 	left := m.theme.Weekday.Render(glyph+"  "+m.date.Time().Format("Monday")) +
 		m.theme.Date.Render(", "+m.date.Human())
@@ -73,6 +99,14 @@ func (m *Model) renderHeader() string {
 	}
 
 	return "\n" + m.gutter() + m.row(left, right) + "\n" + m.gutter() + m.theme.Line(m.contentWidth())
+}
+
+// plainHeader is the header for a view that isn't a day: the season stays,
+// so the top of the screen never changes shape, and the words change.
+func (m *Model) plainHeader(d entry.Date, label string) string {
+	glyph := ui.SeasonOf(d, m.south).Glyph()
+	left := m.theme.Weekday.Render(glyph+"  ") + m.theme.Section.Render(label)
+	return "\n" + m.gutter() + m.row(left, "") + "\n" + m.gutter() + m.theme.Line(m.contentWidth())
 }
 
 // renderFooter is the rule, then whatever mori has to say, then the keys.
@@ -95,10 +129,14 @@ func (m *Model) renderFooter() string {
 	switch m.mode {
 	case modeWrite:
 		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.writingHelp()))
-	case modeGoto:
-		prompt := m.theme.Prompt.Render("go to  ")
+	case modeGoto, modeMood, modeSearch:
+		prompt := m.theme.Prompt.Render(m.promptLabel())
 		m.input.SetWidth(max(1, m.contentWidth()-ansi.StringWidth(prompt)))
 		b.WriteString(m.gutter() + prompt + m.input.View())
+	case modeCalendar:
+		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.calendarHelp()))
+	case modeTags:
+		b.WriteString(m.gutter() + m.help.ShortHelpView(m.keys.listHelp()))
 	default:
 		if m.help.ShowAll {
 			// The full help is several lines, and every one of them needs the
@@ -109,6 +147,18 @@ func (m *Model) renderFooter() string {
 		}
 	}
 	return b.String()
+}
+
+// promptLabel is what the one-line prompt is asking for.
+func (m *Model) promptLabel() string {
+	switch m.mode {
+	case modeMood:
+		return "mood   "
+	case modeSearch:
+		return "search "
+	default:
+		return "go to  "
+	}
 }
 
 // renderPage lays the day out for reading: wrapped prose, section headings

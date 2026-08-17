@@ -25,6 +25,7 @@ type Theme struct {
 
 	// Styles.
 	Logo    lipgloss.Style
+	Section lipgloss.Style // a heading inside a view, like a month name
 	Date    lipgloss.Style
 	Weekday lipgloss.Style
 	Rule    lipgloss.Style
@@ -32,6 +33,7 @@ type Theme struct {
 	Time    lipgloss.Style // the "23:04" of a section heading
 	Tag     lipgloss.Style
 	Mood    lipgloss.Style
+	Match   lipgloss.Style // the part of a line a search found
 	Hint    lipgloss.Style
 	Aside   lipgloss.Style
 	Prompt  lipgloss.Style
@@ -53,12 +55,14 @@ func New(isDark bool) Theme {
 	}
 
 	t.Logo = lipgloss.NewStyle().Foreground(t.Brand).Bold(true)
+	t.Section = lipgloss.NewStyle().Foreground(t.Text).Bold(true)
 	t.Date = lipgloss.NewStyle().Foreground(t.Muted)
 	t.Weekday = lipgloss.NewStyle().Foreground(t.Brand)
 	t.Rule = lipgloss.NewStyle().Foreground(t.Faint)
 	t.Body = lipgloss.NewStyle().Foreground(t.Text)
 	t.Time = lipgloss.NewStyle().Foreground(t.Faint)
 	t.Tag = lipgloss.NewStyle().Foreground(t.Brand)
+	t.Match = lipgloss.NewStyle().Foreground(t.Brand).Bold(true)
 	t.Mood = lipgloss.NewStyle().Foreground(t.Accent)
 	t.Hint = lipgloss.NewStyle().Foreground(t.Faint)
 	t.Aside = lipgloss.NewStyle().Foreground(t.Muted).Italic(true)

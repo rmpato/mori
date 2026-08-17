@@ -3,6 +3,8 @@
 package tui
 
 import (
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -14,6 +16,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/rmpato/mori/internal/entry"
+	"github.com/rmpato/mori/internal/search"
 	"github.com/rmpato/mori/internal/store"
 	"github.com/rmpato/mori/internal/ui"
 )
@@ -24,6 +27,10 @@ const (
 	modeRead mode = iota
 	modeWrite
 	modeGoto
+	modeMood
+	modeCalendar
+	modeSearch
+	modeTags
 )
 
 const (
@@ -48,6 +55,7 @@ const (
 
 type autosaveMsg struct{ seq int }
 type statusExpiredMsg struct{ seq int }
+type editorDoneMsg struct{ err error }
 
 // Model is the Bubble Tea model for mori.
 type Model struct {
@@ -65,6 +73,19 @@ type Model struct {
 	help  help.Model
 
 	mode mode
+
+	// The month view: which month is drawn, which days in it have pages, and
+	// where the cursor is sitting.
+	month   entry.Date
+	cursor  entry.Date
+	written map[entry.Date]bool
+
+	// Searching and tags: the answers, and which one is selected. findSeq
+	// lets a result recognise that a later keystroke has superseded it.
+	results  []search.Match
+	tags     []search.TagCount
+	selected int
+	findSeq  int
 
 	// saveSeq lets a pending autosave recognise that it has been superseded.
 	saveSeq int
@@ -207,6 +228,37 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.status = ""
 		}
 
+	case searchDoneMsg:
+		// A result from a keystroke that has since been overtaken is stale.
+		if msg.seq != m.findSeq {
+			break
+		}
+		if msg.err != nil {
+			m.results = nil
+			m.setStatus(msg.err.Error())
+			cmds = append(cmds, m.expireStatus())
+			break
+		}
+		m.status = ""
+		m.results = msg.matches
+		m.move(0, len(m.results))
+
+	case tagsDoneMsg:
+		if msg.err != nil {
+			m.err = msg.err
+			break
+		}
+		m.tags = msg.counts
+		m.move(0, len(m.tags))
+
+	case editorDoneMsg:
+		if msg.err != nil {
+			m.setStatus(msg.err.Error())
+			cmds = append(cmds, m.expireStatus())
+		}
+		// Whatever your editor did to the file is the truth now.
+		m.load(m.date)
+
 	case tea.KeyPressMsg:
 		cmd, quit := m.handleKey(msg)
 		if quit {
@@ -239,8 +291,18 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 	switch m.mode {
 	case modeWrite:
 		return m.handleWriteKey(msg), false
-	case modeGoto:
-		return m.handleGotoKey(msg), false
+	case modeGoto, modeMood:
+		return m.handlePromptKey(msg), false
+	case modeSearch:
+		return m.handleSearchKey(msg), false
+	case modeTags:
+		return m.handleTagsKey(msg), false
+	case modeCalendar:
+		if m.handleCalendarKey(msg) {
+			return nil, false
+		}
+		// Anything the calendar doesn't claim — q, ? — falls through to the
+		// keys that work everywhere.
 	}
 
 	switch {
@@ -259,9 +321,22 @@ func (m *Model) handleKey(msg tea.KeyPressMsg) (tea.Cmd, bool) {
 		m.goTo(entry.DateOf(m.now()))
 
 	case key.Matches(msg, m.keys.Goto):
-		m.mode = modeGoto
-		m.input.SetValue("")
-		return m.input.Focus(), false
+		return m.openPrompt(modeGoto, ""), false
+
+	case key.Matches(msg, m.keys.Mood):
+		return m.openPrompt(modeMood, m.page.Mood), false
+
+	case key.Matches(msg, m.keys.Calendar):
+		m.openCalendar()
+
+	case key.Matches(msg, m.keys.Search):
+		return m.openSearch(m.input.Value()), false
+
+	case key.Matches(msg, m.keys.Tags):
+		return m.openTags(), false
+
+	case key.Matches(msg, m.keys.Editor):
+		return m.openEditor(), false
 
 	case key.Matches(msg, m.keys.Write):
 		return m.beginWrite(false), false
@@ -300,8 +375,17 @@ func (m *Model) handleWriteKey(msg tea.KeyPressMsg) tea.Cmd {
 	return tea.Batch(cmd, m.scheduleSave())
 }
 
-// handleGotoKey drives the little date prompt.
-func (m *Model) handleGotoKey(msg tea.KeyPressMsg) tea.Cmd {
+// openPrompt puts the cursor in the one-line prompt at the bottom.
+func (m *Model) openPrompt(to mode, value string) tea.Cmd {
+	m.mode = to
+	m.input.SetValue(value)
+	m.input.CursorEnd()
+	return m.input.Focus()
+}
+
+// handlePromptKey drives the one-line prompt, which asks for a date or a
+// mood depending on how it was opened.
+func (m *Model) handlePromptKey(msg tea.KeyPressMsg) tea.Cmd {
 	switch {
 	case key.Matches(msg, m.keys.Cancel):
 		m.mode = modeRead
@@ -309,6 +393,13 @@ func (m *Model) handleGotoKey(msg tea.KeyPressMsg) tea.Cmd {
 		return nil
 
 	case key.Matches(msg, m.keys.Submit):
+		if m.mode == modeMood {
+			m.setMood(entry.NormalizeMood(m.input.Value()))
+			m.mode = modeRead
+			m.input.Blur()
+			return nil
+		}
+
 		d, err := entry.ParseDate(m.input.Value(), m.now())
 		if err != nil {
 			m.setStatus(err.Error())
@@ -323,6 +414,53 @@ func (m *Model) handleGotoKey(msg tea.KeyPressMsg) tea.Cmd {
 	in, cmd := m.input.Update(msg)
 	m.input = in
 	return cmd
+}
+
+// setMood records a word about the day, or clears it. There is no scale, no
+// score, and mori never says anything back about it.
+func (m *Model) setMood(mood string) {
+	if mood == m.page.Mood {
+		return
+	}
+	m.page.Mood = mood
+	m.commit()
+}
+
+// openEditor hands the day to $EDITOR and takes it back afterwards.
+//
+// The page is saved first, so your editor opens what you have written rather
+// than what mori last got round to writing down.
+func (m *Model) openEditor() tea.Cmd {
+	m.commit()
+
+	path, err := m.store.Prepare(m.date)
+	if err != nil {
+		m.setStatus(err.Error())
+		return m.expireStatus()
+	}
+
+	editor, args := editorCommand()
+	if editor == "" {
+		m.setStatus("no $EDITOR set")
+		return m.expireStatus()
+	}
+
+	c := exec.Command(editor, append(args, path)...)
+	return tea.ExecProcess(c, func(err error) tea.Msg { return editorDoneMsg{err: err} })
+}
+
+// editorCommand resolves which editor to use, respecting the usual
+// convention that VISUAL wins over EDITOR for a full-screen one.
+func editorCommand() (string, []string) {
+	for _, v := range []string{os.Getenv("VISUAL"), os.Getenv("EDITOR")} {
+		if fields := strings.Fields(v); len(fields) > 0 {
+			return fields[0], fields[1:]
+		}
+	}
+	if path, err := exec.LookPath("vi"); err == nil {
+		return path, nil
+	}
+	return "", nil
 }
 
 // goTo moves to another day, saving whatever is on the current one first.

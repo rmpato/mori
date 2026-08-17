@@ -56,7 +56,8 @@ Everything else is here so mori works in scripts and pipes too.
 
   mori today
   mori show yesterday
-  mori path
+  mori search photography
+  mori tags
 
 Pages are plain Markdown files on your machine, one per day. Nothing is sent
 anywhere.`,
@@ -82,6 +83,9 @@ anywhere.`,
 	root.AddCommand(
 		newTodayCmd(),
 		newShowCmd(),
+		newListCmd(),
+		newSearchCmd(),
+		newTagsCmd(),
 		newPathCmd(),
 	)
 	return root

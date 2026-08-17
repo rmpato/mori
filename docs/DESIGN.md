@@ -565,7 +565,7 @@ you write, and it never appears at the top of an empty page looking expectant.
 |---|---|---|
 | **M0** | `entry` + `store` + tests; `mori path`, `mori today`, `mori show` | done |
 | **M1** | TUI: read + write + day navigation + autosave + theme | done |
-| **M2** | calendar, search, tags, mood, `$EDITOR` | |
+| **M2** | calendar, search, tags, mood, `$EDITOR` | done |
 | **M3** | release plumbing — Makefile, goreleaser, install.sh, CI, README | |
 | **M4** | `facts` + tuki bridge + `--from-tuki` + config | |
 | **M5** | polish: mascot, seasons, `looking-back` | |

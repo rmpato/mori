@@ -25,6 +25,16 @@ type KeyMap struct {
 	Section key.Binding
 	Done    key.Binding
 	Save    key.Binding
+	Editor  key.Binding
+
+	Calendar  key.Binding
+	Search    key.Binding
+	Tags      key.Binding
+	Mood      key.Binding
+	PrevMonth key.Binding
+	NextMonth key.Binding
+	Select    key.Binding
+	Back      key.Binding
 
 	Help   key.Binding
 	Quit   key.Binding
@@ -50,6 +60,16 @@ func DefaultKeys() KeyMap {
 		Section: key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new section")),
 		Done:    key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "done writing")),
 		Save:    key.NewBinding(key.WithKeys("ctrl+s"), key.WithHelp("ctrl+s", "save")),
+		Editor:  key.NewBinding(key.WithKeys("E"), key.WithHelp("E", "open in $EDITOR")),
+
+		Calendar:  key.NewBinding(key.WithKeys("c"), key.WithHelp("c", "calendar")),
+		Search:    key.NewBinding(key.WithKeys("/"), key.WithHelp("/", "search")),
+		Tags:      key.NewBinding(key.WithKeys("#"), key.WithHelp("#", "tags")),
+		Mood:      key.NewBinding(key.WithKeys("m"), key.WithHelp("m", "mood")),
+		PrevMonth: key.NewBinding(key.WithKeys("[", ","), key.WithHelp("[", "previous month")),
+		NextMonth: key.NewBinding(key.WithKeys("]", "."), key.WithHelp("]", "next month")),
+		Select:    key.NewBinding(key.WithKeys("enter"), key.WithHelp("↵", "open")),
+		Back:      key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "back")),
 
 		Help:   key.NewBinding(key.WithKeys("?"), key.WithHelp("?", "keys")),
 		Quit:   key.NewBinding(key.WithKeys("q", "ctrl+c"), key.WithHelp("q", "quit")),
@@ -60,7 +80,7 @@ func DefaultKeys() KeyMap {
 
 // ShortHelp is the one-line footer.
 func (k KeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{k.PrevDay, k.NextDay, k.Write, k.Today, k.Help, k.Quit}
+	return []key.Binding{k.PrevDay, k.NextDay, k.Write, k.Calendar, k.Search, k.Help, k.Quit}
 }
 
 // FullHelp is the '?' view.
@@ -68,8 +88,8 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.PrevDay, k.NextDay, k.Today, k.Goto},
 		{k.Up, k.Down, k.Top, k.End},
-		{k.Write, k.Section, k.Done, k.Save},
-		{k.Help, k.Quit},
+		{k.Write, k.Section, k.Editor, k.Mood},
+		{k.Calendar, k.Search, k.Tags, k.Help, k.Quit},
 	}
 }
 
@@ -77,4 +97,31 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 // keys above belong to the text rather than to mori.
 func (k KeyMap) writingHelp() []key.Binding {
 	return []key.Binding{k.Done, k.Save}
+}
+
+// calendarHelp is the footer in the month view, where up and down are weeks
+// rather than lines.
+func (k KeyMap) calendarHelp() []key.Binding {
+	return []key.Binding{
+		relabel(k.PrevDay, "←→", "day"),
+		relabel(k.Up, "↑↓", "week"),
+		relabel(k.PrevMonth, "[ ]", "month"),
+		k.Select,
+		k.Back,
+	}
+}
+
+// listHelp is the footer under a list of results or tags.
+func (k KeyMap) listHelp() []key.Binding {
+	return []key.Binding{relabel(k.Up, "↑↓", "move"), k.Select, k.Back}
+}
+
+// relabel says what a key does in the mode you're in — up and down are lines
+// in a page, weeks in a month, and results in a list.
+//
+// It copies the binding's real keys rather than restating them, so a footer
+// can describe a key differently but can never describe a key that isn't
+// there.
+func relabel(b key.Binding, keys, desc string) key.Binding {
+	return key.NewBinding(key.WithKeys(b.Keys()...), key.WithHelp(keys, desc))
 }

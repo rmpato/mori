@@ -51,7 +51,16 @@ Horizontal moves through time, vertical moves through the page.
 | `n` | new section |
 | `t` | today |
 | `g` | go to a date |
+| `c` | calendar |
+| `/` | search |
+| `#` | tags |
+| `m` | mood |
+| `E` | open in `$EDITOR` |
 | `?` `q` | keys, quit |
+
+The calendar shows the month with the days you wrote on picked out. Search
+runs as you type, newest day first. Tags are just the hashtags in your
+writing — choosing one is choosing a search.
 
 Your writing is saved when you pause, when you stop, and when you leave. You
 should never have to think about it.
@@ -62,14 +71,21 @@ mori also works in pipes and scripts:
 mori today                 # print today's page
 mori show yesterday        # any day: fri, -3d, 2026-08-17, "17 aug"
 mori show 2026-08-17 --json
+mori list --since 2026-01-01
+mori search photography
+mori search "the zine idea"
+mori search gym since:2026-01-01
+mori tags                  # the tags you've used, and how often
 mori path                  # where the journal lives
 mori path yesterday        # the file for a day, whether or not it exists yet
-
-$EDITOR "$(mori path today)"
 ```
 
-Search, a calendar, tags, and the optional [tuki](https://github.com/rmpato/tuki)
-bridge are on the way — see the design doc below.
+Bare search words match the start of a word, so `photo` finds `photography`.
+A quoted phrase is matched exactly. Every printing command takes `--plain`
+(tab-separated) and `--json`.
+
+The optional [tuki](https://github.com/rmpato/tuki) bridge is next — see the
+design doc below.
 
 ## Where your journal lives
 

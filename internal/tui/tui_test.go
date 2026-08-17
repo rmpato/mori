@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -46,26 +47,78 @@ func newHarness(t *testing.T, seed map[entry.Date]string) *harness {
 	return h
 }
 
-// send delivers a message and runs any command it returns, so a command that
-// panics still fails the test. Commands are capped at a short timeout because
-// some of them are timers that would otherwise sleep; the resulting message is
-// discarded, since every assertion here is about state Update sets
-// synchronously.
+// How long the harness waits for a command to answer. The work mori does off
+// the main loop — searching a temp journal of a few files, counting its tags —
+// takes microseconds. The commands that don't answer in this window are the
+// timers, at 750ms and 3s, and the tests that care about those send their
+// messages by hand.
+const cmdWindow = 25 * time.Millisecond
+
+// send delivers a message, runs whatever commands come back, and feeds their
+// messages in as Bubble Tea would — so a test exercises the real asynchronous
+// path rather than reaching into the model.
 func (h *harness) send(msg tea.Msg) {
+	h.t.Helper()
+	h.deliver(msg, 0)
+}
+
+func (h *harness) deliver(msg tea.Msg, depth int) {
 	h.t.Helper()
 	model, cmd := h.m.Update(msg)
 	h.m = model.(*Model)
-	if cmd == nil {
+	h.run(cmd, depth)
+}
+
+// run executes a command tree. Batched commands run at the same time, so one
+// sleeping timer alongside a search doesn't cost the search its window.
+func (h *harness) run(cmd tea.Cmd, depth int) {
+	h.t.Helper()
+	if cmd == nil || depth > 8 {
 		return
 	}
-	done := make(chan struct{})
-	go func() {
-		defer close(done)
-		cmd()
-	}()
+
+	out := make(chan tea.Msg, 1)
+	go func() { out <- cmd() }()
+
+	var msg tea.Msg
 	select {
-	case <-done:
-	case <-time.After(20 * time.Millisecond):
+	case msg = <-out:
+	case <-time.After(cmdWindow):
+		return
+	}
+
+	if batch, ok := msg.(tea.BatchMsg); ok {
+		var wg sync.WaitGroup
+		msgs := make(chan tea.Msg, len(batch))
+		for _, c := range batch {
+			if c == nil {
+				continue
+			}
+			wg.Add(1)
+			go func() { defer wg.Done(); msgs <- c() }()
+		}
+		done := make(chan struct{})
+		go func() { wg.Wait(); close(done) }()
+		select {
+		case <-done:
+		case <-time.After(cmdWindow):
+		}
+		// The channel is buffered for the whole batch and never closed: a
+		// command still sleeping when the window ran out has somewhere to put
+		// its message, rather than a closed channel to panic on.
+		for {
+			select {
+			case m := <-msgs:
+				if m != nil {
+					h.deliver(m, depth+1)
+				}
+			default:
+				return
+			}
+		}
+	}
+	if msg != nil {
+		h.deliver(msg, depth+1)
 	}
 }
 

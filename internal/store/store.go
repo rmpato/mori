@@ -171,6 +171,17 @@ func (s *Store) prune(dir string) {
 	}
 }
 
+// Prepare makes sure a day's directory exists and returns the path to write
+// it at. It is what mori hands to your editor: the file itself is left
+// uncreated, so opening a day and changing your mind leaves no trace.
+func (s *Store) Prepare(d entry.Date) (string, error) {
+	path := s.Path(d)
+	if err := os.MkdirAll(filepath.Dir(path), dirPerm); err != nil {
+		return "", fmt.Errorf("creating %s: %w", filepath.Dir(path), err)
+	}
+	return path, nil
+}
+
 // Dates lists the days that actually have pages, oldest first.
 //
 // A zero from or to means "as far back as there is" and "up to the last day
