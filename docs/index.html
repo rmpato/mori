@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>mori — remember your days, not just your tasks</title>
-<meta name="description" content="mori is a private, local-first journal that lives in your terminal. Plain Markdown files, one per day. No account, no cloud, no streaks.">
+<title>mori — a quiet place to remember your days</title>
+<meta name="description" content="mori is a journal that lives in your terminal. One local Markdown file per day, no accounts, no cloud, no streaks. Just what happened.">
 
 <meta property="og:title" content="mori">
-<meta property="og:description" content="A quiet place to remember your days. A private, local-first journal that lives in your terminal.">
+<meta property="og:description" content="A quiet place to remember your days, not just your tasks.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://rmpato.github.io/mori/">
 
@@ -20,49 +20,52 @@
 
 <nav class="topbar" id="topbar" aria-label="Sections">
   <div class="topbar-inner">
-    <a class="topbar-brand" href="#top"><span aria-hidden="true">(-.-)</span> mori</a>
+    <a class="topbar-brand" href="#top">
+      <span class="topbar-face" aria-hidden="true">(-.-)</span> mori
+    </a>
     <ul class="topbar-links">
-      <li><a href="#look">look</a></li>
+      <li><a href="#look">screens</a></li>
+      <li><a href="#install">install</a></li>
       <li><a href="#using">using it</a></li>
       <li><a href="#why">why</a></li>
       <li><a href="#tuki">tuki</a></li>
-      <li><a href="#install">install</a></li>
     </ul>
     <a class="topbar-gh" href="https://github.com/rmpato/mori">GitHub</a>
   </div>
 </nav>
 
-<!-- ============================================================ masthead -->
-<header class="masthead" id="top">
-  <div class="col">
+<header class="hero" id="top">
+  <div class="wrap">
     <div class="mascot" aria-hidden="true">
       <span class="brow left"></span><span class="brow right"></span>
       <span class="face">(<i class="eye l">-</i>.<i class="eye r">-</i>)</span>
     </div>
-    <h1 class="wordmark">mori</h1>
-    <p class="tagline">Remember your days, not just your tasks.</p>
-  </div>
 
-  <div class="install">
-    <div class="cmd">
+    <h1>mori</h1>
+    <p class="tagline">
+      A quiet place to remember your days,<br>not just your tasks.
+    </p>
+
+    <div class="install-line">
       <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/rmpato/mori/main/install.sh | sh</code>
-      <button class="copy" data-copy="#install-cmd" aria-label="Copy the install command">copy</button>
+      <button class="copy" data-copy="#install-cmd" aria-label="Copy install command">copy</button>
     </div>
     <p class="install-note">
-      Checks the download against the release's own sha256 and puts
-      <code>mori</code> on your <code>PATH</code>. <a href="#install">Other ways &rarr;</a>
+      Picks the right build, checks its checksum, and puts <code>mori</code> on your
+      <code>PATH</code>. <a href="#install">Other ways &rarr;</a>
     </p>
+
     <nav class="hero-links">
-      <a class="btn solid" href="https://github.com/rmpato/mori">GitHub</a>
-      <a class="btn" href="#install">Other ways</a>
+      <a class="btn" href="https://github.com/rmpato/mori">GitHub</a>
+      <a class="btn ghost" href="https://github.com/rmpato/mori/releases">Releases</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-<!-- ============================================================= gallery -->
-<section class="wide spread" id="look">
+<!-- ------------------------------------------------------- screenshot -->
+<section class="wide shot-section" id="look">
   <div class="tabs gallery" data-tabs>
     <div class="tablist" role="tablist" aria-label="Screens">
       <button role="tab" aria-selected="true"  data-tab="today">today</button>
@@ -78,7 +81,7 @@
            alt="mori showing Monday, August 17, 2026 with a mood of calm: a page
                 written in two sittings, with a 23:04 timestamp between them and
                 #go and #photography picked out in green.">
-      <p class="shot-caption">Type <code class="inline">mori</code> and today's page is open, cursor already in it. The timestamp appeared because the writing came back to it after dinner.</p>
+      <p class="shot-caption">Type <code>mori</code> and today's page is open, cursor already in it.</p>
     </div>
 
     <div class="tabpanel" data-panel="calendar" hidden>
@@ -92,197 +95,220 @@
       <img class="shot" src="screen-search.png" width="1600" height="812" loading="lazy"
            alt="Search for the word photo, showing three matching days with the
                 matched text highlighted in each excerpt.">
-      <p class="shot-caption">Search runs as you type, newest day first, and shows the line the words were actually on.</p>
+      <p class="shot-caption">Search runs as you type, newest day first, on the line the words were actually on.</p>
     </div>
 
     <div class="tabpanel" data-panel="tags" hidden>
       <img class="shot" src="screen-tags.png" width="1600" height="812" loading="lazy"
            alt="The tag list: photography on three days, go on two, and work,
                 health, ideas and travel on one each.">
-      <p class="shot-caption">Tags are the hashtags in your writing. Nothing to set up, nothing to maintain — choosing one is choosing a search.</p>
+      <p class="shot-caption">Tags are the hashtags in your writing. Choosing one is choosing a search.</p>
     </div>
 
     <div class="tabpanel" data-panel="context" hidden>
       <img class="shot" src="screen-context.png" width="1600" height="812" loading="lazy"
            alt="The context pane for August 17: three finished tuki tasks and one
-                still open, each with its tag."
-      >
-      <p class="shot-caption">If you use <a href="https://github.com/rmpato/tuki">tuki</a>, press <kbd>tab</kbd> to see what you got done while you decide what to say about it.</p>
+                still open, each with its tag.">
+      <p class="shot-caption">With <a href="https://rmpato.github.io/tuki/">tuki</a> installed, <kbd>tab</kbd> shows what you got done while you decide what to say about it.</p>
     </div>
 
     <div class="tabpanel" data-panel="back" hidden>
       <img class="shot" src="screen-lookingback.png" width="1600" height="574" loading="lazy"
            alt="mori looking-back august: you wrote on 9 days, with tag counts for
                 photography, go and work, and a line about what was finished in tuki.">
-      <p class="shot-caption">A month, read back. No comparison to another month, no average, no percentage, and no adjective about whether it was enough.</p>
+      <p class="shot-caption">A month, read back. No comparison to another month, no average, no adjective.</p>
     </div>
   </div>
 </section>
 
+<!-- ---------------------------------------------------------- install -->
+<section class="wrap" id="install">
+  <div class="section-head">
+    <h2>Install</h2>
+    <p>Pick whichever you'd normally reach for.</p>
+  </div>
 
-<!-- =========================================================== using it -->
-<section class="col" id="using">
+  <div class="tabs" data-tabs>
+    <div class="tablist" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="curl">script</button>
+      <button role="tab" aria-selected="false" data-tab="go">go</button>
+      <button role="tab" aria-selected="false" data-tab="src">source</button>
+      <button role="tab" aria-selected="false" data-tab="manual">binary</button>
+    </div>
+
+    <div class="tabpanel" data-panel="curl">
+<pre><code><span class="c">$</span> curl -fsSL https://raw.githubusercontent.com/rmpato/mori/main/install.sh | sh</code></pre>
+      <p>Installs to <code>~/.local/bin</code> and adds it to your <code>PATH</code> if it
+      isn't already there. Every download is checked against the release's sha256
+      before anything is written.</p>
+      <p class="muted">Options: <code>--dir &lt;path&gt;</code>,
+      <code>--version &lt;tag&gt;</code>, <code>--no-modify-path</code>.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="go" hidden>
+<pre><code><span class="c">$</span> go install github.com/rmpato/mori@latest</code></pre>
+      <p>This lands in <code>$(go env GOPATH)/bin</code> — usually <code>~/go/bin</code>,
+      which isn't on your <code>PATH</code> by default. Add it:</p>
+<pre><code><span class="c">$</span> export PATH="$HOME/go/bin:$PATH"</code></pre>
+    </div>
+
+    <div class="tabpanel" data-panel="src" hidden>
+<pre><code><span class="c">$</span> git clone https://github.com/rmpato/mori
+<span class="c">$</span> cd mori
+<span class="c">$</span> make install</code></pre>
+      <p>Go 1.26 or newer. <code>make check</code> runs the formatter, vet, and the tests.</p>
+    </div>
+
+    <div class="tabpanel" data-panel="manual" hidden>
+      <p>Grab an archive for your platform from the
+      <a href="https://github.com/rmpato/mori/releases">releases page</a>, unpack it,
+      and move <code>mori</code> somewhere on your <code>PATH</code>.</p>
+<pre><code><span class="c">$</span> tar -xzf mori_*_darwin_arm64.tar.gz
+<span class="c">$</span> mv mori ~/.local/bin/</code></pre>
+      <p class="muted">macOS, Linux, and Windows; amd64 and arm64.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>Staying current</h3>
+<pre><code><span class="c">$</span> mori update</code></pre>
+    <p>mori checks for a newer version, shows you what changed, and
+    <strong>asks before replacing anything</strong>. The download is verified, and
+    your current binary is kept aside until the new one is safely in place. It's
+    the only command that touches the network.</p>
+  </div>
+</section>
+
+<!-- -------------------------------------------------------------- use -->
+<section class="wrap" id="using">
   <div class="section-head">
     <h2>Using it</h2>
-    <p>Type <code class="inline">mori</code> and today's page is open. That's the whole idea.</p>
+    <p>Type <code>mori</code> and today's page is there. That's the whole idea.</p>
   </div>
 
   <div class="two-up">
     <div>
       <h3>Write</h3>
-      <p>There is no "new entry" step — every day already exists, and most are
-      simply empty. <kbd>↵</kbd> starts writing and <kbd>esc</kbd> stops. Your
-      words are saved when you pause, when you stop, and when you leave.</p>
-      <p>Come back to a day hours later and mori stamps the time for you.</p>
+      <p>There's no "new entry" step — every day already exists, and most are
+      simply empty. <kbd>↵</kbd> starts writing and <kbd>esc</kbd> stops.</p>
+      <p>Your words are saved when you pause, when you stop, and when you leave.
+      Come back to a day hours later and mori stamps the time for you.</p>
     </div>
+
     <div>
       <h3>Look back</h3>
       <p><kbd>←</kbd> <kbd>→</kbd> move through days, <kbd>c</kbd> opens the
-      calendar, <kbd>/</kbd> searches as you type, and <kbd>#</kbd> lists the
-      tags you've used.</p>
+      calendar, <kbd>/</kbd> searches as you type, <kbd>#</kbd> lists your tags.</p>
       <p><kbd>?</kbd> shows every key there is.</p>
     </div>
   </div>
 
-  <h3>It behaves in a pipe</h3>
-  <p>When output isn't a terminal, mori hands you the file rather than a
-  drawing of it:</p>
+  <h3>Your journal is a folder of Markdown</h3>
+  <p>One small file per day, written atomically at <code>0600</code> in a
+  directory only you can read:</p>
+<pre><code><span class="c">~/.local/share/mori/journal/2026/08/</span>2026-08-17.md</code></pre>
+  <p>Tags are the hashtags in your prose; <code>## HH:MM</code> marks a second
+  sitting. No database and no index — if mori disappeared tomorrow, your journal
+  would still be there.</p>
 
-<pre class="code"><code><span class="p">$</span> mori show yesterday        <span class="c"># or: fri, -3d, 2026-08-17</span>
-<span class="p">$</span> mori search photography   <span class="c"># newest day first</span>
-<span class="p">$</span> mori looking-back august  <span class="c"># a month, read back</span>
-<span class="p">$</span> $EDITOR "$(mori path today)"</code></pre>
-  <p class="muted">Every printing command takes <code class="inline">--plain</code>
-  and <code class="inline">--json</code>.</p>
+  <h3>It behaves in a pipe</h3>
+  <p>When output isn't a terminal, mori hands you the file rather than a drawing
+  of it:</p>
+<pre class="overflows"><code><span class="c">$</span> mori show yesterday        <span class="c"># or: fri, -3d, 2026-08-17</span>
+<span class="c">$</span> mori search photography --json | jq -r '.[].date'
+<span class="c">$</span> mori looking-back august
+<span class="c">$</span> $EDITOR "$(mori path today)"</code></pre>
+  <p class="muted">Every printing command takes <code>--plain</code> and
+  <code>--json</code>.</p>
 </section>
 
-<!-- =============================================================== files -->
-<section class="col" id="files">
+<!-- ------------------------------------------------------- philosophy -->
+<section class="philosophy" id="why">
+  <div class="wrap">
   <div class="section-head">
-    <h2>Your journal</h2>
-    <p>One plain Markdown file per day, in a folder you own.</p>
+    <h2>What mori doesn't do</h2>
   </div>
 
-<pre class="code"><code><span class="c">~/.local/share/mori/journal/2026/08/</span>2026-08-17.md</code></pre>
+  <ul class="nots">
+    <li><span>no</span> accounts, servers, or sync</li>
+    <li><span>no</span> streaks or word counts</li>
+    <li><span>no</span> notifications, ever</li>
+    <li><span>no</span> mood charts or trends</li>
+    <li><span>no</span> telemetry</li>
+    <li><span>no</span> subscription</li>
+  </ul>
 
-  <p>Written atomically, at <code class="inline">0600</code>, in a directory
-  only you can read. Tags are the hashtags in your prose;
-  <code class="inline">## HH:MM</code> marks a second sitting. No database and
-  no index — if mori disappeared tomorrow, your journal would still be there.</p>
+  <p>Numbers appear in mori only when they're being interesting, never when
+  they're being a scoreboard. The mood field is one optional word that shows as
+  a quiet mark beside the date — no scale, no average, and mori never says
+  anything back about it.</p>
+
+  <p>Open mori after three weeks away and it says <em>welcome back</em>. Once,
+  without a number in it. There's deliberately no line for the opposite case,
+  because that line is why people abandon journals.</p>
+
+  <blockquote>
+    mori doesn't ask how you're doing. It just leaves the page open.
+  </blockquote>
+  </div>
 </section>
 
-<!-- ================================================================ tuki -->
-<section class="col" id="tuki">
+<!-- ---------------------------------------------------------- sibling -->
+<section class="wide sibling" id="tuki">
   <div class="section-head">
     <h2>mori has a sibling</h2>
     <p>Same design language, opposite direction.</p>
   </div>
-</section>
 
-<div class="wide">
   <div class="pair">
-    <div class="tuki">
-      <span class="who" aria-hidden="true">(o.o)</span>
-      <h3><a href="https://github.com/rmpato/tuki">tuki</a></h3>
-      <p>What do I need to do?</p>
+    <div class="is-tuki">
+      <span class="pair-face" aria-hidden="true">(o.o)</span>
+      <h3><a href="https://rmpato.github.io/tuki/">tuki</a></h3>
+      <p class="pair-q">What do I need to do?</p>
+      <p>Tasks, tags, due dates. Eyes open, pointed forwards.</p>
     </div>
-    <div class="mori">
-      <span class="who" aria-hidden="true">(-.-)</span>
+    <div class="is-mori">
+      <span class="pair-face" aria-hidden="true">(-.-)</span>
       <h3>mori</h3>
-      <p>What happened?</p>
+      <p class="pair-q">What happened?</p>
+      <p>A journal, one Markdown file per day. Eyes closed, pointed backwards.</p>
     </div>
   </div>
-</div>
 
-<blockquote class="pull">
-  <span>tuki</span> provides the facts.<br>
-  <span>mori</span> provides the reflection.
-</blockquote>
-
-<section class="col">
-  <p>mori will never turn your task list into prose and call it your writing —
-  that rule is the reason the two are separate tools. The bridge is optional,
-  read-only, and silent when tuki isn't installed.</p>
+  <p class="pair-note"><strong>tuki helps you move forward. mori helps you look
+  back.</strong> Each works perfectly with the other uninstalled; with both,
+  <kbd>tab</kbd> shows what you got done on a day while you write about it —
+  read-only, and never turned into prose for you.</p>
 </section>
 
-
-<!-- ============================================================= install -->
-<section class="col" id="install">
+<!-- ------------------------------------------------------------ built -->
+<section class="wrap built" id="built">
   <div class="section-head">
-    <h2>Install</h2>
-    <p>However you'd normally reach for it.</p>
+    <h2>Built with</h2>
   </div>
-
-  <p>The one-liner at the top of this page is the usual way: it checks the
-  download against the release's own sha256, installs to
-  <code class="inline">~/.local/bin</code>, and puts that on your
-  <code class="inline">PATH</code>. If you'd rather not pipe a script:</p>
-
-  <div class="tabs" data-tabs>
-    <div class="tablist" role="tablist" aria-label="Other ways to install">
-      <button role="tab" aria-selected="true"  data-tab="go">go</button>
-      <button role="tab" aria-selected="false" data-tab="src">source</button>
-      <button role="tab" aria-selected="false" data-tab="bin">binary</button>
-    </div>
-
-    <div class="tabpanel" data-panel="go">
-<pre class="code"><code><span class="p">$</span> go install github.com/rmpato/mori@latest</code></pre>
-      <p>Lands in <code class="inline">~/go/bin</code>, which isn't on your
-      <code class="inline">PATH</code> by default.</p>
-    </div>
-
-    <div class="tabpanel" data-panel="src" hidden>
-<pre class="code"><code><span class="p">$</span> git clone https://github.com/rmpato/mori
-<span class="p">$</span> cd mori &amp;&amp; make install</code></pre>
-      <p>Go 1.26 or newer.</p>
-    </div>
-
-    <div class="tabpanel" data-panel="bin" hidden>
-      <p>Archives for macOS, Linux and Windows are on the
-      <a href="https://github.com/rmpato/mori/releases">releases page</a>.</p>
-    </div>
-  </div>
-
-  <p class="aside" style="margin-top:1.6rem">Afterwards
-  <code class="inline">mori update</code> keeps it current. It asks first, and
-  it is the only command that touches the network.</p>
-</section>
-
-
-<!-- ================================================================ what -->
-<section class="col" id="why">
-  <div class="section-head">
-    <h2>What mori doesn't do</h2>
-    <p>Journalling, not measuring.</p>
-  </div>
-
-  <ul class="nots">
-    <li>accounts or sync</li>
-    <li>cloud, ever</li>
-    <li>streaks</li>
-    <li>notifications</li>
-    <li>mood charts</li>
-    <li>telemetry</li>
+  <ul class="stack">
+    <li><a href="https://github.com/charmbracelet/bubbletea">Bubble Tea</a><span>the interface</span></li>
+    <li><a href="https://github.com/charmbracelet/lipgloss">Lip Gloss</a><span>the styling</span></li>
+    <li><a href="https://github.com/charmbracelet/bubbles">Bubbles</a><span>textarea, viewport, help</span></li>
+    <li><a href="https://github.com/charmbracelet/fang">Fang</a><span>the command line</span></li>
   </ul>
-
-  <p class="aside" style="margin-top:2.2rem">Nothing on this page is sent
-  anywhere either: no fonts, no analytics, no third-party anything. It seemed
-  like the least a page about a private journal could do.</p>
+  <p class="muted">Written in Go. Starts instantly, does one thing.</p>
 </section>
 
 </main>
 
 <footer>
-  <div class="col">
-    <span class="face" aria-hidden="true">(-.-)</span>
-    <p class="links">
+  <div class="wrap">
+    <span class="foot-face" aria-hidden="true">(-.-)</span>
+    <p>
       <a href="https://github.com/rmpato/mori">source</a> ·
       <a href="https://github.com/rmpato/mori/releases">releases</a> ·
       <a href="https://github.com/rmpato/mori/blob/main/docs/DESIGN.md">design notes</a> ·
-      <a href="https://github.com/rmpato/tuki">tuki</a> ·
+      <a href="https://rmpato.github.io/tuki/">tuki</a> ·
       <a href="https://github.com/rmpato/mori/blob/main/LICENSE">MIT</a>
     </p>
-    <p>tuki helps you move forward. mori helps you look back.</p>
+    <p class="muted small">tuki helps you move forward. mori helps you look back.</p>
+    <p><a class="totop" href="#top">↑ back to top</a></p>
   </div>
 </footer>
 

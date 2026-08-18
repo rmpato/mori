@@ -1,94 +1,108 @@
-/* mori — the little bit of behaviour this page needs, and nothing more. */
+/* mori — the behaviour this page needs.
+ *
+ * The same three pieces tuki's page has — the topbar, the copy button and the
+ * install tabs — lifted from it so the two pages behave identically. tuki's
+ * file also drives its interactive demo; mori has screenshots instead. */
 
-// Copy the install command.
-for (const button of document.querySelectorAll('button.copy')) {
-  button.addEventListener('click', async () => {
-    const source = document.querySelector(button.dataset.copy);
-    if (!source) return;
-    try {
-      await navigator.clipboard.writeText(source.textContent.trim());
-    } catch {
-      // Clipboard access can be refused; select the text so it can be
-      // copied by hand rather than leaving the button looking broken.
-      const range = document.createRange();
-      range.selectNodeContents(source);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      return;
-    }
-    const was = button.textContent;
-    button.textContent = 'copied';
-    button.classList.add('done');
-    setTimeout(() => {
-      button.textContent = was;
-      button.classList.remove('done');
-    }, 1600);
-  });
-}
+(function () {
+  "use strict";
 
-// Install tabs.
-for (const tabs of document.querySelectorAll('[data-tabs]')) {
-  const buttons = [...tabs.querySelectorAll('[data-tab]')];
-  const panels = [...tabs.querySelectorAll('[data-panel]')];
+  (function topbar() {
+      var bar = document.getElementById("topbar");
+      var hero = document.querySelector(".hero");
+      if (!bar || !hero) return;
 
-  const show = (name) => {
-    for (const b of buttons) b.setAttribute('aria-selected', String(b.dataset.tab === name));
-    for (const p of panels) p.hidden = p.dataset.panel !== name;
-  };
+      var links = {};
+      Array.prototype.forEach.call(bar.querySelectorAll("[href^='#']"), function (a) {
+        links[a.getAttribute("href").slice(1)] = a;
+      });
 
-  for (const b of buttons) {
-    b.addEventListener('click', () => show(b.dataset.tab));
-    b.addEventListener('keydown', (e) => {
-      const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-      if (!step) return;
-      e.preventDefault();
-      const next = buttons[(buttons.indexOf(b) + step + buttons.length) % buttons.length];
-      next.focus();
-      show(next.dataset.tab);
-    });
-  }
-}
-
-/* The topbar stays out of the way until the masthead is gone, and marks the
-   section you're in. Same behaviour as tuki's — the two pages should move the
-   same way, even where they don't look the same. */
-(function topbar() {
-  const bar = document.getElementById('topbar');
-  const masthead = document.querySelector('.masthead');
-  if (!bar || !masthead || !('IntersectionObserver' in window)) return;
-
-  new IntersectionObserver(
-    ([entry]) => bar.classList.toggle('show', !entry.isIntersecting),
-    { rootMargin: '-70px 0px 0px 0px' }
-  ).observe(masthead);
-
-  const links = new Map();
-  for (const a of bar.querySelectorAll("a[href^='#']")) {
-    const id = a.getAttribute('href').slice(1);
-    if (id !== 'top') links.set(id, a);
-  }
-
-  const sections = [...links.keys()]
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
-  if (!sections.length) return;
-
-  // Whichever section crosses the middle band of the viewport is the current
-  // one. aria-current rather than a class, so the marker is in the semantics
-  // and not only in the paint — tuki's page does exactly the same.
-  const visible = new Map();
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) visible.set(e.target.id, e.isIntersecting);
-
-      const current = sections.find((el) => visible.get(el.id));
-      for (const a of links.values()) a.removeAttribute('aria-current');
-      if (current && links.has(current.id)) {
-        links.get(current.id).setAttribute('aria-current', 'true');
+      // Show the bar once the hero is out of the way.
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          bar.classList.toggle("show", !entries[0].isIntersecting);
+        }, { rootMargin: "-60px 0px 0px 0px" }).observe(hero);
+      } else {
+        bar.classList.add("show");
       }
-    },
-    { rootMargin: '-45% 0px -45% 0px' }
-  );
-  for (const section of sections) observer.observe(section);
-})();
+
+      var sections = ["look", "install", "using", "why", "tuki"]
+        .map(function (id) { return document.getElementById(id); })
+        .filter(Boolean);
+
+      if (!("IntersectionObserver" in window) || !sections.length) return;
+
+      // Whichever section crosses the middle band of the viewport is "current".
+      var visible = {};
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+
+        var current = null;
+        sections.forEach(function (s) {
+          if (visible[s.id] && !current) current = s.id;
+        });
+
+        Object.keys(links).forEach(function (id) {
+          links[id].removeAttribute("aria-current");
+        });
+        if (current && links[current]) {
+          links[current].setAttribute("aria-current", "true");
+        }
+      }, { rootMargin: "-45% 0px -45% 0px" });
+
+      sections.forEach(function (s) { io.observe(s); });
+    })();
+
+    // Copy button on the install command.
+    Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.querySelector(btn.dataset.copy);
+        if (!target) return;
+        var text = target.textContent;
+
+        var done = function () {
+          var was = btn.textContent;
+          btn.textContent = "copied";
+          btn.classList.add("done");
+          setTimeout(function () {
+            btn.textContent = was;
+            btn.classList.remove("done");
+          }, 1600);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+          fallback();
+        }
+
+        function fallback() {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); done(); } catch (err) { /* nothing to do */ }
+          document.body.removeChild(ta);
+        }
+      });
+    });
+
+    // Install tabs.
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tabs]"), function (group) {
+      var tabs   = group.querySelectorAll("[data-tab]");
+      var panels = group.querySelectorAll("[data-panel]");
+
+      Array.prototype.forEach.call(tabs, function (tab) {
+        tab.addEventListener("click", function () {
+          Array.prototype.forEach.call(tabs, function (t) {
+            t.setAttribute("aria-selected", String(t === tab));
+          });
+          Array.prototype.forEach.call(panels, function (p) {
+            p.hidden = p.dataset.panel !== tab.dataset.tab;
+          });
+        });
+      });
+    });
+  })();
