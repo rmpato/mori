@@ -60,7 +60,10 @@ func newHarnessWith(t *testing.T, seed map[entry.Date]string, src facts.Source) 
 // takes microseconds. The commands that don't answer in this window are the
 // timers, at 750ms and 3s, and the tests that care about those send their
 // messages by hand.
-const cmdWindow = 25 * time.Millisecond
+// 50ms rather than 25: the window only has to be much longer than a
+// filesystem read and much shorter than the 750ms autosave, and a shared CI
+// runner is slower at the first of those than a laptop is.
+const cmdWindow = 50 * time.Millisecond
 
 // send delivers a message, runs whatever commands come back, and feeds their
 // messages in as Bubble Tea would — so a test exercises the real asynchronous

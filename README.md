@@ -1,5 +1,10 @@
 # mori
 
+[![ci](https://github.com/rmpato/mori/actions/workflows/ci.yml/badge.svg)](https://github.com/rmpato/mori/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/rmpato/mori?color=3c6b49&label=release)](https://github.com/rmpato/mori/releases)
+[![go report](https://goreportcard.com/badge/github.com/rmpato/mori)](https://goreportcard.com/report/github.com/rmpato/mori)
+[![license](https://img.shields.io/badge/license-MIT-3c6b49)](LICENSE)
+
 > Remember your days, not just your tasks.
 
 A private, local-first journal that lives in your terminal. One plain Markdown
@@ -74,3 +79,10 @@ list into prose and call it your writing.
 [the web interface, planned](docs/WEB.md) ·
 [runbooks](runbooks/) ·
 [MIT](LICENSE)
+
+## Contributing
+
+Bug reports and ideas are welcome — [CONTRIBUTING.md](CONTRIBUTING.md) says how
+things are built and which ideas get turned down, so a no is never a surprise.
+Vulnerabilities go through [private reporting](https://github.com/rmpato/mori/security/advisories/new),
+not public issues: [SECURITY.md](SECURITY.md).
