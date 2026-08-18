@@ -174,39 +174,47 @@ h3 {
 }
 .topbar.show { transform: none; opacity: 1; }
 .topbar-inner {
-  max-width: var(--wide);
-  margin-inline: auto;
-  padding: .7rem 1.5rem;
+  max-width: calc(var(--measure) + 8rem);
+  margin: 0 auto;
+  padding: .55rem 1.5rem;
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 1rem;
 }
 .topbar-brand {
   font-family: var(--mono);
-  font-size: .8rem;
-  color: var(--moss);
+  font-weight: 600;
+  color: var(--ink);
   background-image: none;
   white-space: nowrap;
+  flex: none;
 }
 .topbar-brand:hover { background-image: none; opacity: .75; }
 .topbar-links {
   list-style: none;
   display: flex;
-  gap: 1.2rem;
-  margin: 0 auto 0 0;
+  gap: .25rem;
+  margin: 0;
   padding: 0;
-  font-family: var(--sans);
-  font-size: .72rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  flex: 1;
+  justify-content: center;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.topbar-links a { color: var(--ink-faint); background-image: none; }
-.topbar-links a:hover { color: var(--moss); }
+.topbar-links a {
+  display: block;
+  padding: .25rem .7rem;
+  border-radius: var(--r-pill);
+  font-size: .87rem;
+  color: var(--ink-faint);
+  background-image: none;
+  white-space: nowrap;
+  transition: color .15s, background .15s;
+}
+.topbar-links a:hover { color: var(--ink); background: var(--paper-2); background-image: none; }
 .topbar-gh {
-  font-family: var(--sans);
-  font-size: .72rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  flex: none;
+  font-size: .87rem;
   color: var(--ink-soft);
   background-image: none;
   white-space: nowrap;
@@ -224,7 +232,7 @@ section[id] { scroll-margin-top: 4.5rem; }
 /* ------------------------------------------------------------ masthead -- */
 
 .masthead {
-  padding: var(--hero) 0 0;
+  padding: var(--hero) 0 4rem;
   text-align: center;
   /* The same light over the top of the page tuki has, in mori's green. */
   background:
@@ -247,11 +255,11 @@ section[id] { scroll-margin-top: 4.5rem; }
 .mascot {
   display: inline-block;
   font-family: var(--mono);
-  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-size: clamp(2.4rem, 9vw, 3.4rem);
   color: var(--moss);
-  letter-spacing: .06em;
+  letter-spacing: .02em;
   line-height: 1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 .mascot .eye {
   font-style: normal;
@@ -277,7 +285,7 @@ section[id] { scroll-margin-top: 4.5rem; }
 .tagline {
   font-size: clamp(1.05rem, 3.4vw, 1.28rem);
   color: var(--ink-soft);
-  margin: 0 auto;
+  margin: 0 auto 2.4rem;
   max-width: 30rem;
   text-wrap: balance;
 }
@@ -305,7 +313,7 @@ section[id] { scroll-margin-top: 4.5rem; }
 /* ------------------------------------------------------------- install -- */
 
 .install {
-  margin: 2.8rem auto 0;
+  margin: 0 auto;
   max-width: var(--measure);
   padding-inline: var(--gutter);
 }
@@ -482,9 +490,6 @@ blockquote.pull::before {
   background: var(--moss);
 }
 
-/* A heading on its own, centred, used as a hinge between spreads. */
-.centred { text-align: center; }
-
 /* The "what mori doesn't do" list. */
 .nots {
   list-style: none;
@@ -601,7 +606,10 @@ footer p { font-size: .92rem; color: var(--ink-faint); }
 footer .links a { margin: 0 .35rem; }
 
 /* The section you're currently in. */
-.topbar-links a[aria-current] { color: var(--moss); }
+.topbar-links a[aria-current="true"] {
+  color: var(--moss);
+  background: color-mix(in srgb, var(--moss) 10%, transparent);
+}
 
 /* tuki's small-print class, so a footnote looks the same on both sites. */
 .muted { color: var(--ink-faint); font-size: .9rem; }
@@ -609,7 +617,6 @@ footer .links a { margin: 0 .35rem; }
 /* Little antennae, so mori reads as a creature rather than punctuation —
    the same pair tuki has, tilted the same way. */
 .mascot { position: relative; }
-.mascot .face { display: inline-block; }
 .mascot .brow {
   position: absolute;
   top: -.3em;
