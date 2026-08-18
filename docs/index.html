@@ -23,6 +23,7 @@
     <a class="topbar-brand" href="#top"><span aria-hidden="true">(-.-)</span> mori</a>
     <ul class="topbar-links">
       <li><a href="#look">look</a></li>
+      <li><a href="#using">using it</a></li>
       <li><a href="#why">why</a></li>
       <li><a href="#tuki">tuki</a></li>
       <li><a href="#install">install</a></li>
@@ -34,10 +35,12 @@
 <!-- ============================================================ masthead -->
 <header class="masthead" id="top">
   <div class="col">
-    <span class="mascot" aria-hidden="true">(<i class="eye l">-</i>.<i class="eye r">-</i>)</span>
+    <div class="mascot" aria-hidden="true">
+      <span class="brow left"></span><span class="brow right"></span>
+      <span class="face">(<i class="eye l">-</i>.<i class="eye r">-</i>)</span>
+    </div>
     <h1 class="wordmark">mori</h1>
     <p class="tagline">Remember your days, not just your tasks.</p>
-    <p class="masthead-rule">A journal for the terminal</p>
   </div>
 
   <div class="install">
@@ -45,6 +48,10 @@
       <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/rmpato/mori/main/install.sh | sh</code>
       <button class="copy" data-copy="#install-cmd" aria-label="Copy the install command">copy</button>
     </div>
+    <p class="install-note">
+      Checks the download against the release's own sha256 and puts
+      <code>mori</code> on your <code>PATH</code>. <a href="#install">Other ways &rarr;</a>
+    </p>
     <nav class="hero-links">
       <a class="btn solid" href="https://github.com/rmpato/mori">GitHub</a>
       <a class="btn" href="#install">Other ways</a>
@@ -112,7 +119,57 @@
   </div>
 </section>
 
-<p class="ornament" aria-hidden="true">🍂</p>
+
+<!-- =========================================================== using it -->
+<section class="col" id="using">
+  <div class="section-head">
+    <h2>Using it</h2>
+    <p>Type <code class="inline">mori</code> and today's page is open. That's the whole idea.</p>
+  </div>
+
+  <div class="two-up">
+    <div>
+      <h3>Write</h3>
+      <p>There is no "new entry" step — every day already exists, and most are
+      simply empty. <kbd>↵</kbd> starts writing and <kbd>esc</kbd> stops. Your
+      words are saved when you pause, when you stop, and when you leave.</p>
+      <p>Come back to a day hours later and mori stamps the time for you.</p>
+    </div>
+    <div>
+      <h3>Look back</h3>
+      <p><kbd>←</kbd> <kbd>→</kbd> move through days, <kbd>c</kbd> opens the
+      calendar, <kbd>/</kbd> searches as you type, and <kbd>#</kbd> lists the
+      tags you've used.</p>
+      <p><kbd>?</kbd> shows every key there is.</p>
+    </div>
+  </div>
+
+  <h3>It behaves in a pipe</h3>
+  <p>When output isn't a terminal, mori hands you the file rather than a
+  drawing of it:</p>
+
+<pre class="code"><code><span class="p">$</span> mori show yesterday        <span class="c"># or: fri, -3d, 2026-08-17</span>
+<span class="p">$</span> mori search photography   <span class="c"># newest day first</span>
+<span class="p">$</span> mori looking-back august  <span class="c"># a month, read back</span>
+<span class="p">$</span> $EDITOR "$(mori path today)"</code></pre>
+  <p class="muted">Every printing command takes <code class="inline">--plain</code>
+  and <code class="inline">--json</code>.</p>
+</section>
+
+<!-- =============================================================== files -->
+<section class="col" id="files">
+  <div class="section-head">
+    <h2>Your journal</h2>
+    <p>One plain Markdown file per day, in a folder you own.</p>
+  </div>
+
+<pre class="code"><code><span class="c">~/.local/share/mori/journal/2026/08/</span>2026-08-17.md</code></pre>
+
+  <p>Written atomically, at <code class="inline">0600</code>, in a directory
+  only you can read. Tags are the hashtags in your prose;
+  <code class="inline">## HH:MM</code> marks a second sitting. No database and
+  no index — if mori disappeared tomorrow, your journal would still be there.</p>
+</section>
 
 <!-- ================================================================ tuki -->
 <section class="col centred" id="tuki">
@@ -148,7 +205,6 @@
   read-only, and silent when tuki isn't installed.</p>
 </section>
 
-<p class="ornament" aria-hidden="true">❄</p>
 
 <!-- ============================================================= install -->
 <section class="col" id="install">
@@ -192,7 +248,6 @@
   it is the only command that touches the network.</p>
 </section>
 
-<p class="ornament" aria-hidden="true">🌱</p>
 
 <!-- ================================================================ what -->
 <section class="col" id="why">
