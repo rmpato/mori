@@ -33,8 +33,17 @@
   --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
            "Liberation Mono", monospace;
 
-  --col:  34rem;   /* the reading column */
-  --wide: 60rem;   /* terminal spreads and grids */
+
+  /* Layout is shared with tuki, so the two pages sit on one grid: the same
+     reading measure, the same wide column for screens and grids, the same
+     gutter, and the same vertical rhythm. Only the palette and the type are
+     meant to tell them apart. */
+  --gutter:  1.5rem;
+  --measure: 40rem;   /* prose */
+  --wide:    60rem;   /* galleries, screens, grids */
+  --space:   3.5rem;  /* the vertical rhythm unit */
+  --hero:    5.5rem;  /* above the masthead */
+  --col: var(--measure);
 
   /* Shapes are shared with tuki so the two read as siblings. The palette and
      the typography are what tell them apart; the geometry shouldn't. */
@@ -43,6 +52,8 @@
   --r-lg:  14px;    /* captures, matching the rounding baked into the PNGs */
   --r-pill: 100px;  /* buttons, tabs */
   --ease:  .18s ease;
+  --shot-shadow: 0 18px 44px -20px rgba(24, 32, 22, .35),
+                 0 3px 10px -6px rgba(24, 32, 22, .22);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -55,6 +66,9 @@
     --ink-faint: #6e7368;
     --rule:      #2a3025;
     --rule-soft: #21261d;
+
+    --shot-shadow: 0 24px 60px -18px rgba(0, 0, 0, .6),
+                   0 4px 14px -6px rgba(0, 0, 0, .4);
 
     --moss:      #8cc9a0;
     --moss-deep: #a9dcb9;
@@ -84,8 +98,8 @@ body {
 
 /* --------------------------------------------------------------- bones -- */
 
-.col   { width: 100%; max-width: var(--col);  margin-inline: auto; padding-inline: 1.5rem; }
-.wide  { width: 100%; max-width: var(--wide); margin-inline: auto; padding-inline: 1.5rem; }
+.col   { width: 100%; max-width: var(--measure); margin-inline: auto; padding-inline: var(--gutter); }
+.wide  { width: 100%; max-width: var(--wide);    margin-inline: auto; padding-inline: var(--gutter); }
 
 p { margin: 0 0 1.15em; }
 p:last-child { margin-bottom: 0; }
@@ -151,7 +165,7 @@ h3 {
   color: var(--rule);
   font-size: 1rem;
   letter-spacing: .8em;
-  margin: 5.5rem 0;
+  margin: calc(var(--space) / 2) 0;
   user-select: none;
 }
 
@@ -223,7 +237,7 @@ section[id] { scroll-margin-top: 4.5rem; }
 /* ------------------------------------------------------------ masthead -- */
 
 .masthead {
-  padding: clamp(3.5rem, 9vw, 7rem) 0 0;
+  padding: var(--hero) 0 0;
   text-align: center;
 }
 
@@ -300,8 +314,8 @@ section[id] { scroll-margin-top: 4.5rem; }
 
 .install {
   margin: 2.8rem auto 0;
-  max-width: 40rem;
-  padding-inline: 1.5rem;
+  max-width: var(--measure);
+  padding-inline: var(--gutter);
 }
 
 .cmd {
@@ -427,6 +441,11 @@ button.copy.done  { color: var(--moss); }
   width: 100%;
   height: auto;
   max-width: 100%;
+  border-radius: var(--r-md);
+  /* The same lift tuki's screenshots have. The window's own corners are
+     already rounded in the file, so no border — a frame around a screenshot
+     of a framed window reads as a double edge. */
+  box-shadow: var(--shot-shadow);
 }
 
 figure { margin: 0; }
@@ -440,7 +459,7 @@ figcaption {
 
 /* ------------------------------------------------------------- sections -- */
 
-section { padding: 1rem 0; }
+section { padding: calc(var(--space) / 2) 0; }
 
 /* margin-block, not the shorthand: a shorthand here would flatten the
    margin-inline:auto that .wide uses to centre itself. */
