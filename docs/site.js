@@ -49,3 +49,46 @@ for (const tabs of document.querySelectorAll('[data-tabs]')) {
     });
   }
 }
+
+/* The topbar stays out of the way until the masthead is gone, and marks the
+   section you're in. Same behaviour as tuki's — the two pages should move the
+   same way, even where they don't look the same. */
+(function topbar() {
+  const bar = document.getElementById('topbar');
+  const masthead = document.querySelector('.masthead');
+  if (!bar || !masthead || !('IntersectionObserver' in window)) return;
+
+  new IntersectionObserver(
+    ([entry]) => bar.classList.toggle('show', !entry.isIntersecting),
+    { rootMargin: '-70px 0px 0px 0px' }
+  ).observe(masthead);
+
+  const links = new Map();
+  for (const a of bar.querySelectorAll("a[href^='#']")) {
+    const id = a.getAttribute('href').slice(1);
+    if (id !== 'top') links.set(id, a);
+  }
+
+  const sections = [...links.keys()]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  if (!sections.length) return;
+
+  // Whichever section crosses the middle band of the viewport is the current
+  // one. aria-current rather than a class, so the marker is in the semantics
+  // and not only in the paint — tuki's page does exactly the same.
+  const visible = new Map();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) visible.set(e.target.id, e.isIntersecting);
+
+      const current = sections.find((el) => visible.get(el.id));
+      for (const a of links.values()) a.removeAttribute('aria-current');
+      if (current && links.has(current.id)) {
+        links.get(current.id).setAttribute('aria-current', 'true');
+      }
+    },
+    { rootMargin: '-45% 0px -45% 0px' }
+  );
+  for (const section of sections) observer.observe(section);
+})();

@@ -35,6 +35,14 @@
 
   --col:  34rem;   /* the reading column */
   --wide: 60rem;   /* terminal spreads and grids */
+
+  /* Shapes are shared with tuki so the two read as siblings. The palette and
+     the typography are what tell them apart; the geometry shouldn't. */
+  --r-sm:   4px;    /* code blocks, chips */
+  --r-md:   8px;    /* panels, screens */
+  --r-lg:  14px;    /* captures, matching the rounding baked into the PNGs */
+  --r-pill: 100px;  /* buttons, tabs */
+  --ease:  .18s ease;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -153,14 +161,17 @@ h3 {
    page felt like something you fall down rather than something you can move
    around in. */
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 40;
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: saturate(150%) blur(10px);
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s ease;
+  border-bottom: 1px solid var(--rule);
+  transform: translateY(-102%);
+  opacity: 0;
+  transition: transform .28s ease, opacity .28s ease;
 }
+.topbar.show { transform: none; opacity: 1; }
 .topbar-inner {
   max-width: var(--wide);
   margin-inline: auto;
@@ -225,6 +236,30 @@ section[id] { scroll-margin-top: 4.5rem; }
   margin-bottom: 1.6rem;
 }
 
+/* tuki blinks — eyes open, briefly shut. mori is the other way round: its
+   eyes are shut, and every so often it peeks. Same trick, opposite rest
+   state, which is the whole relationship between the two in one animation. */
+.mascot {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  color: var(--moss);
+  letter-spacing: .06em;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.mascot .eye {
+  font-style: normal;
+  display: inline-block;
+  animation: peek 9s infinite;
+}
+.mascot .eye.r { animation-delay: .08s; }
+@keyframes peek {
+  0%, 88%, 100% { transform: scaleY(1); }
+  90%, 95%      { transform: scaleY(2.6) translateY(-.02em); }
+}
+@media (prefers-reduced-motion: reduce) { .mascot .eye { animation: none; } }
+
 .wordmark {
   font-size: clamp(3.4rem, 2rem + 7vw, 6rem);
   line-height: .9;
@@ -274,7 +309,7 @@ section[id] { scroll-margin-top: 4.5rem; }
   align-items: stretch;
   gap: .5rem;
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   background: var(--paper-2);
   overflow: hidden;
 }
@@ -312,29 +347,30 @@ button.copy.done  { color: var(--moss); }
   gap: .6rem;
   margin-top: 1.4rem;
 }
+/* Pills, like tuki's. */
 .btn {
+  display: inline-block;
   font-family: var(--sans);
-  font-size: .75rem;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: .58rem 1.15rem;
+  font-size: .88rem;
+  font-weight: 600;
+  padding: .55rem 1.35rem;
   border: 1px solid var(--rule);
-  border-radius: 3px;
+  border-radius: var(--r-pill);
   color: var(--ink-soft);
   background: none;
   background-image: none;
-  transition: border-color .18s ease, color .18s ease;
+  transition: transform .12s ease, filter .15s ease, border-color var(--ease), color var(--ease);
 }
-.btn:hover { border-color: var(--moss); color: var(--moss); background-image: none; }
+.btn:hover { border-color: var(--moss); color: var(--moss); background-image: none; transform: translateY(-1px); }
 .btn.solid { background: var(--moss); border-color: var(--moss); color: var(--paper); }
-.btn.solid:hover { background: var(--moss-deep); border-color: var(--moss-deep); color: var(--paper); }
+.btn.solid:hover { filter: brightness(1.08); color: var(--paper); }
 
 /* -------------------------------------------------------------- terminal -- */
 
 .screen {
   background: var(--paper-2);
   border: 1px solid var(--rule);
-  border-radius: 5px;
+  border-radius: var(--r-md);
   padding: 1.35rem 1.1rem;
   overflow-x: auto;
   scrollbar-width: thin;
@@ -500,7 +536,7 @@ h2.big {
 pre.code {
   background: var(--paper-2);
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   padding: .95rem 1.1rem;
   overflow-x: auto;
   margin: 1.1rem 0;
@@ -520,28 +556,30 @@ code.inline {
 }
 
 /* Tabs, for the install section. */
+/* Pills again, so a tab looks like a tab on both sites. */
 .tablist {
   display: flex;
   gap: .3rem;
-  border-bottom: 1px solid var(--rule);
   margin-bottom: 1.2rem;
   flex-wrap: wrap;
 }
 .tablist button {
-  font-family: var(--sans);
-  font-size: .7rem;
-  letter-spacing: .12em;
-  text-transform: uppercase;
+  font-family: var(--mono);
+  font-size: .82rem;
   background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
   color: var(--ink-faint);
-  padding: .5rem .75rem;
-  margin-bottom: -1px;
+  padding: .35rem .85rem;
   cursor: pointer;
+  transition: color var(--ease), border-color var(--ease), background var(--ease);
 }
-.tablist button[aria-selected="true"] { color: var(--moss); border-bottom-color: var(--moss); }
 .tablist button:hover { color: var(--ink); }
+.tablist button[aria-selected="true"] {
+  color: var(--moss);
+  border-color: var(--moss);
+  background: var(--moss-wash);
+}
 
 /* The two-tool section. */
 .pair {
@@ -549,7 +587,7 @@ code.inline {
   gap: 0;
   grid-template-columns: 1fr;
   border: 1px solid var(--rule);
-  border-radius: 5px;
+  border-radius: var(--r-md);
   overflow: hidden;
   margin: 2.4rem 0;
 }
@@ -578,3 +616,6 @@ footer {
 footer .face { font-size: 1.15rem; margin-bottom: 1.1rem; }
 footer p { font-size: .92rem; color: var(--ink-faint); }
 footer .links a { margin: 0 .35rem; }
+
+/* The section you're currently in. */
+.topbar-links a[aria-current] { color: var(--moss); }
