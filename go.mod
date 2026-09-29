@@ -3,8 +3,8 @@ module github.com/rmpato/mori
 go 1.26.6
 
 require (
-	charm.land/bubbles/v2 v2.2.0
-	charm.land/bubbletea/v2 v2.0.9
+	charm.land/bubbles/v2 v2.2.1
+	charm.land/bubbletea/v2 v2.0.10
 	charm.land/lipgloss/v2 v2.0.6
 	github.com/charmbracelet/colorprofile v0.4.3
 	github.com/charmbracelet/fang v1.0.0
